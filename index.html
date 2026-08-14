@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>商标推荐资源库</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1f2d3d; --ink2:#5b6b7c;
+    --line:#e3e8ef; --line2:#eef2f7;
+    --primary:#1f5fae; --primary-d:#163f78; --primary-l:#eaf1fa;
+    --gold:#b8902f; --green:#2e9e5b; --red:#e0524d; --amber:#e0a32e;
+    --radius:14px; --shadow:0 1px 3px rgba(20,40,70,.06),0 6px 20px rgba(20,40,70,.05);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--ink); font-size:14px; line-height:1.5;
+  }
+  .app{display:flex; min-height:100vh}
+
+  /* sidebar */
+  .sidebar{width:228px; background:#0f2747; color:#cdd9e8; flex-shrink:0; position:fixed; top:0; bottom:0; left:0; display:flex; flex-direction:column}
+  .brand{padding:22px 20px 18px; border-bottom:1px solid rgba(255,255,255,.08)}
+  .brand h1{font-size:17px; margin:0; color:#fff; letter-spacing:.5px; font-weight:700}
+  .brand p{margin:6px 0 0; font-size:12px; color:#7f93ad}
+  .nav{padding:14px 12px; display:flex; flex-direction:column; gap:4px}
+  .nav button{display:flex; align-items:center; gap:11px; width:100%; text-align:left; background:none; border:0; color:#b9c7da; padding:12px 14px; border-radius:10px; font-size:14px; cursor:pointer; font-family:inherit}
+  .nav button svg{width:18px;height:18px;flex-shrink:0}
+  .nav button:hover{background:rgba(255,255,255,.06); color:#fff}
+  .nav button.active{background:var(--primary); color:#fff; font-weight:600}
+  .side-foot{padding:14px 18px; margin-top:auto; font-size:11px; color:#6c7f99; border-top:1px solid rgba(255,255,255,.08)}
+
+  /* main */
+  .main{margin-left:228px; flex:1; padding:0 0 40px; min-width:0}
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(244,246,249,.85); backdrop-filter:blur(8px); padding:14px 24px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; border-bottom:1px solid var(--line)}
+  .topbar .title{font-size:16px; font-weight:700; margin-right:auto; display:flex; align-items:center; gap:9px}
+  .topbar .title svg{width:20px;height:20px;color:var(--primary)}
+  .btn{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:#fff; color:var(--ink); padding:9px 14px; border-radius:10px; font-size:13px; cursor:pointer; font-family:inherit; white-space:nowrap; transition:.15s}
+  .btn svg{width:15px;height:15px}
+  .btn:hover{border-color:#c4d2e6; background:#fafcff}
+  .btn.primary{background:var(--primary); border-color:var(--primary); color:#fff}
+  .btn.primary:hover{background:var(--primary-d)}
+  .btn.gold{background:var(--gold); border-color:var(--gold); color:#fff; font-weight:600}
+  .btn.gold:hover{background:#9c7a26}
+  .btn.ghost{border-color:transparent; background:transparent; color:var(--ink2)}
+  .btn.danger{color:var(--red); border-color:#f3c9c7}
+  .btn.danger:hover{background:#fdeceb}
+  .btn.sm{padding:6px 10px; font-size:12px; border-radius:8px}
+
+  .wrap{padding:22px 24px; max-width:1180px}
+  .view{display:none}
+  .view.active{display:block; animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* backup banner */
+  .banner{background:#fff8e8; border:1px solid #f3e2b8; color:#8a6512; padding:12px 16px; border-radius:12px; margin-bottom:18px; display:flex; align-items:center; gap:12px; font-size:13px}
+  .banner b{color:#7a580d}
+  .banner .btn{margin-left:auto}
+
+  /* today block */
+  .today-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .tcard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow)}
+  .tcard h3{margin:0 0 12px; font-size:14px; display:flex; align-items:center; gap:8px; color:var(--ink)}
+  .tcard h3 .dot{width:8px;height:8px;border-radius:50%}
+  .dot.blue{background:var(--primary)} .dot.red{background:var(--red)} .dot.green{background:var(--green)}
+  .mini-stat{display:flex; align-items:baseline; gap:8px}
+  .mini-stat .num{font-size:30px; font-weight:800; color:var(--primary)}
+  .mini-stat .num.red{color:var(--red)}
+  .mini-stat .lab{font-size:12px; color:var(--ink2)}
+  .follow-item{display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px dashed var(--line)}
+  .follow-item:first-of-type{border-top:0}
+  .follow-item .fi-main{flex:1; min-width:0}
+  .follow-item .fi-name{font-weight:600; font-size:13px}
+  .follow-item .fi-sub{font-size:11.5px; color:var(--ink2); margin-top:2px}
+  .tag{display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; font-weight:600}
+  .tag.red{background:#fdeceb; color:var(--red)}
+  .tag.green{background:#e8f6ee; color:var(--green)}
+  .tag.blue{background:var(--primary-l); color:var(--primary)}
+  .tag.gray{background:#eef1f5; color:var(--ink2)}
+  .empty{color:var(--ink2); font-size:13px; padding:14px 0; text-align:center}
+
+  /* stats */
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:18px}
+  .stat{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow)}
+  .stat .s-lab{font-size:12.5px; color:var(--ink2); display:flex; align-items:center; gap:7px}
+  .stat .s-lab svg{width:16px;height:16px;color:var(--primary)}
+  .stat .s-num{font-size:28px; font-weight:800; margin-top:8px}
+  .stat .s-num small{font-size:13px; font-weight:600; color:var(--ink2)}
+  .chart-row{display:grid; grid-template-columns:1.5fr 1fr; gap:16px}
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow)}
+  .panel h3{margin:0 0 14px; font-size:14px}
+  .legend{display:flex; flex-direction:column; gap:9px; margin-top:6px}
+  .legend .li{display:flex; align-items:center; gap:9px; font-size:13px}
+  .legend .sw{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+  .legend .li .lv{margin-left:auto; font-weight:700}
+
+  /* filters */
+  .filter-bar{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); margin-bottom:18px}
+  .filter-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; align-items:end}
+  .field{display:flex; flex-direction:column; gap:5px}
+  .field label{font-size:12px; color:var(--ink2)}
+  .field input,.field select,.field textarea{font-family:inherit; font-size:14px; padding:9px 11px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); width:100%}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-l)}
+  .filter-actions{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+
+  /* list */
+  .list-head{display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap}
+  .list-head .count{font-size:13px; color:var(--ink2)}
+  .list-head .count b{color:var(--ink)}
+  .sortsel{font-family:inherit; font-size:13px; padding:7px 10px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); cursor:pointer}
+  .tbl-wrap{overflow:auto; border:1px solid var(--line); border-radius:10px}
+  table.dt{width:100%; border-collapse:collapse; font-size:13px; min-width:520px}
+  table.dt th,table.dt td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line2); white-space:nowrap}
+  table.dt th{color:var(--ink2); font-weight:600; background:var(--line2)}
+  table.dt tr:last-child td{border-bottom:0}
+  table.dt tr:hover td{background:#fafbfd}
+  .grid-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px}
+  .tm{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column; transition:.15s}
+  .tm:hover{box-shadow:0 4px 14px rgba(20,40,70,.1)}
+  .tm .thumb{height:150px; background:#f0f3f8; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative}
+  .tm .thumb img{width:100%; height:100%; object-fit:cover}
+  .tm .thumb .noimg{color:#aab6c6; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:6px}
+  .tm .thumb .noimg svg{width:30px;height:30px}
+  .tm .status-strip{position:absolute; top:10px; left:10px}
+  .tm .body{padding:14px; flex:1; display:flex; flex-direction:column; gap:9px}
+  .tm .nm{font-size:15px; font-weight:700; display:flex; align-items:center; gap:8px}
+  .tm .clsbadge{font-size:11px; background:var(--primary-l); color:var(--primary); padding:2px 8px; border-radius:6px; font-weight:700; white-space:nowrap}
+  .tm .meta{font-size:12.5px; color:var(--ink2); display:flex; flex-direction:column; gap:3px}
+  .tm .meta .row{display:flex; gap:6px}
+  .tm .meta .row .k{color:#9aa8ba; min-width:42px}
+  .tm .sub{font-size:12.5px; color:var(--ink); background:var(--line2); padding:7px 9px; border-radius:8px; line-height:1.45}
+  .tm .inq{display:flex; align-items:center; gap:8px; margin-top:2px}
+  .tm .inq .n{font-size:20px; font-weight:800; color:var(--gold)}
+  .tm .inq .n small{font-size:12px; color:var(--ink2); font-weight:600}
+  .tm .acts{display:flex; gap:6px; padding:0 14px 14px; flex-wrap:wrap}
+  .tm .acts .btn{flex:1; justify-content:center; min-width:64px}
+
+  /* modal */
+  .mask{position:fixed; inset:0; background:rgba(15,30,55,.5); display:none; z-index:50; align-items:flex-start; justify-content:center; padding:30px 16px; overflow:auto}
+  .mask.open{display:flex}
+  .modal{background:#fff; border-radius:16px; width:100%; max-width:520px; box-shadow:0 20px 60px rgba(0,0,0,.25); animation:pop .2s ease}
+  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+  .modal .m-head{display:flex; align-items:center; padding:18px 20px; border-bottom:1px solid var(--line)}
+  .modal .m-head h3{margin:0; font-size:16px}
+  .modal .m-head .x{margin-left:auto; cursor:pointer; color:var(--ink2); background:none; border:0; padding:4px}
+  .modal .m-head .x svg{width:20px;height:20px}
+  .modal .m-body{padding:18px 20px; display:flex; flex-direction:column; gap:14px}
+  .modal .m-foot{padding:14px 20px; border-top:1px solid var(--line); display:flex; gap:10px; justify-content:flex-end}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .imgpick{display:flex; flex-direction:column; gap:10px}
+  .imgpick .prev-grid{display:flex; flex-wrap:wrap; gap:8px}
+  .imgpick .prev-item{position:relative; width:72px;height:72px;border-radius:10px; background:#f0f3f8; border:1px solid var(--line); overflow:hidden; flex-shrink:0}
+  .imgpick .prev-item img{width:100%;height:100%;object-fit:cover}
+  .imgpick .prev-item .del{position:absolute; top:2px; right:2px; width:20px;height:20px; border:0; border-radius:50%; background:rgba(220,60,60,.92); color:#fff; font-size:14px; line-height:18px; cursor:pointer; display:flex; align-items:center; justify-content:center}
+  .imgpick .prev-empty{width:72px;height:72px;border-radius:10px; background:#f0f3f8; border:1px dashed var(--line); display:flex; align-items:center; justify-content:center; color:#aab6c6}
+  .imgpick .prev-empty svg{width:26px;height:26px}
+  .imgpick .imgbtns{display:flex; gap:8px; flex-wrap:wrap}
+  .seg{display:flex; gap:0; border:1px solid var(--line); border-radius:9px; overflow:hidden}
+  .seg label{flex:1; text-align:center; padding:9px; font-size:13px; cursor:pointer; color:var(--ink2)}
+  .seg input{display:none}
+  .seg input:checked + label{background:var(--primary); color:#fff; font-weight:600}
+
+  /* confirm */
+  .confirm .m-body{text-align:center; padding:26px 22px}
+  .confirm .ic{width:54px;height:54px;margin:0 auto 12px; border-radius:50%; display:flex; align-items:center; justify-content:center}
+  .confirm .ic svg{width:28px;height:28px}
+  .confirm.warn .ic{background:#fdeceb; color:var(--red)}
+  .confirm .txt{font-size:14px; color:var(--ink)}
+  .confirm .txt b{color:var(--red)}
+
+  /* toast */
+  .toast{position:fixed; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#1f2d3d; color:#fff; padding:11px 20px; border-radius:10px; font-size:13.5px; opacity:0; pointer-events:none; transition:.25s; z-index:90; box-shadow:0 8px 24px rgba(0,0,0,.2)}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* bottom tabs (mobile) */
+  .bottomtab{display:none}
+
+  /* multi-select (class filter) */
+  .msel{position:relative}
+  .msel-btn{width:100%; text-align:left; font-family:inherit; font-size:14px; padding:9px 11px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:space-between}
+  .msel-btn:after{content:""; width:8px;height:8px; border-right:2px solid var(--ink2); border-bottom:2px solid var(--ink2); transform:rotate(45deg); margin-left:8px; flex-shrink:0}
+  .msel-panel{position:absolute; top:calc(100% + 5px); left:0; right:0; z-index:30; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:10px; max-height:300px; overflow:auto}
+  .msel-search{margin-bottom:8px}
+  .msel-search input{width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font-size:13px; font-family:inherit}
+  .msel-actions{display:flex; gap:8px; margin-bottom:8px}
+  .msel-list{display:flex; flex-direction:column; gap:1px}
+  .msel-list label{display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:7px; font-size:13px; cursor:pointer}
+  .msel-list label:hover{background:var(--line2)}
+  .msel-list input{accent-color:var(--primary); width:16px; height:16px}
+  .msel-list .cn{color:var(--ink2); font-size:12px}
+
+  /* image lightbox */
+  .imgzoom{position:fixed; inset:0; background:rgba(10,18,30,.92); display:none; z-index:80; align-items:center; justify-content:center; padding:24px}
+  .imgzoom.open{display:flex}
+  .imgzoom img{max-width:95%; max-height:95%; border-radius:8px; box-shadow:0 12px 50px rgba(0,0,0,.5); cursor:zoom-out}
+  .imgzoom .x{position:absolute; top:16px; right:16px; background:rgba(255,255,255,.16); border:0; color:#fff; width:44px;height:44px;border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center}
+  .imgzoom .x:hover{background:rgba(255,255,255,.32)}
+  .imgzoom .x svg{width:22px;height:22px}
+  .imgzoom .nav{position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.16); border:0; color:#fff; width:48px;height:48px;border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center}
+  .imgzoom .nav:hover{background:rgba(255,255,255,.32)}
+  .imgzoom .nav svg{width:26px;height:26px}
+  .imgzoom .nav.prev{left:18px}
+  .imgzoom .nav.next{right:18px}
+  .imgzoom .imgidx{position:absolute; bottom:18px; left:50%; transform:translateX(-50%); color:#fff; background:rgba(0,0,0,.45); padding:4px 12px; border-radius:20px; font-size:13px}
+  .imgzoom .imgtool{position:absolute; bottom:56px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:2}
+  .imgzoom .imgtool button{background:rgba(255,255,255,.16); border:0; color:#fff; padding:9px 16px; border-radius:22px; cursor:pointer; font-size:13px}
+  .imgzoom .imgtool button:hover{background:rgba(255,255,255,.32)}
+  .tm .thumb{cursor:zoom-in}
+  .tm .thumb .imgcount{position:absolute; left:8px; bottom:8px; background:rgba(20,32,52,.7); color:#fff; font-size:11px; padding:2px 8px; border-radius:12px; z-index:2}
+  .tm{position:relative}
+  .pick{position:absolute; top:8px; right:8px; z-index:3; background:rgba(255,255,255,.92); border-radius:9px; padding:4px 6px; display:flex; align-items:center; cursor:pointer; box-shadow:0 1px 5px rgba(15,30,55,.18)}
+  .pick input{width:18px;height:18px;margin:0;accent-color:var(--primary);cursor:pointer}
+  .exp-sec{margin-bottom:6px}
+  .exp-sec-head{display:flex; align-items:center; justify-content:space-between; margin:2px 0 8px; gap:8px}
+  .exp-sec-head b{font-size:13.5px; color:var(--ink)}
+  .exp-actions a{font-size:12.5px; color:var(--primary); cursor:pointer; margin-left:12px}
+  .exp-scroll{max-height:38vh; overflow:auto; border:1px solid var(--line); border-radius:10px; padding:4px 10px}
+  .exp-row{display:flex; align-items:center; gap:9px; padding:7px 4px; font-size:13px; cursor:pointer; border-bottom:1px solid var(--line2)}
+  .exp-row:last-child{border-bottom:0}
+  .exp-row input{width:16px;height:16px;margin:0;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+  .exp-row .sub{color:var(--ink2); font-size:12px; margin-left:4px}
+
+  @media(max-width:980px){
+    .stat-row{grid-template-columns:repeat(2,1fr)}
+    .chart-row{grid-template-columns:1fr}
+    .today-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:768px){
+    .sidebar{display:none}
+    .main{margin-left:0; padding-bottom:74px}
+    .topbar{padding:12px 14px}
+    .topbar .title{font-size:15px}
+    .wrap{padding:16px 14px}
+    .btn{padding:9px 11px}
+    .bottomtab{display:flex; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--line); z-index:40; padding:6px 4px calc(6px + env(safe-area-inset-bottom)); box-shadow:0 -2px 12px rgba(0,0,0,.05)}
+    .bottomtab button{flex:1; background:none; border:0; font-family:inherit; font-size:11.5px; color:var(--ink2); display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer}
+    .bottomtab button svg{width:21px;height:21px}
+    .bottomtab button.active{color:var(--primary); font-weight:700}
+    .two{grid-template-columns:1fr}
+  }
+  @media(max-width:420px){
+    .stat-row{grid-template-columns:1fr 1fr}
+  }
+  /* lock screen (team access password) */
+  body.app-locked .app{visibility:hidden}
+  .mask.lock{background:linear-gradient(135deg,#1b2a4a,#2c4a7a); align-items:center; z-index:200}
+  .lock-card{background:#fff; border-radius:18px; padding:30px 26px; width:330px; max-width:90vw; text-align:center; box-shadow:0 24px 70px rgba(0,0,0,.35)}
+  .lock-card h3{margin:8px 0 4px; font-size:19px; color:var(--ink)}
+  .lock-card p{color:var(--ink2); font-size:13px; margin:0 0 18px}
+  .lock-badge{font-size:34px; line-height:1}
+  .lock-card input{width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:9px; font-size:15px; margin-bottom:12px; box-sizing:border-box}
+  .lock-card .btn.block{width:100%}
+  .lock-err{color:#c0392b; font-size:12.5px; min-height:18px; margin-top:2px}
+  .lock-tip{color:#9aa6b6; font-size:11.5px; margin-top:12px; line-height:1.5}
+  .access-log{max-height:150px; overflow:auto; border:1px solid var(--line); border-radius:9px; padding:6px 8px; background:var(--line2); font-size:12.5px}
+  .al-row{display:flex; justify-content:space-between; padding:4px 4px; border-bottom:1px dashed var(--line)}
+  .al-row:last-child{border-bottom:none}
+  .al-who{color:var(--ink); font-weight:600}
+  .al-t{color:var(--ink2)}
+  .al-empty{color:#9aa6b6; text-align:center; padding:8px}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>商标推荐资源库</h1>
+      <p>团队共享 · 本地存储 · 安全备份</p>
+    </div>
+    <nav class="nav">
+      <button data-view="today" class="">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg>今日动态</button>
+      <button data-view="stats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>数据概览</button>
+      <button data-view="library" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>商标资源库</button>
+    </nav>
+    <div class="side-foot">数据存于本浏览器，建议定期导出备份。部署后链接公开可见，请勿预填真实隐私数据。</div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-6 9 6v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"></path><path d="M9 21V12h6v9"></path></svg>
+        商标推荐资源库
+      </div>
+      <button class="btn primary" id="btnAdd">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>发布商标</button>
+      <button class="btn" id="btnExport">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"></path></svg>导出JSON</button>
+      <button class="btn" id="btnImport">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9M8 13l4-4 4 4M5 3h14"></path></svg>导入恢复</button>
+      <button class="btn gold" id="btnPublishTop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>发布永久链接</button>
+      <button class="btn" id="btnSettings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>设置</button>
+      <input type="file" id="fileImport" accept="application/json" hidden="">
+    </header>
+
+    <div class="wrap">
+      <div id="backupBanner"></div>
+
+      <!-- 今日动态 -->
+      <section class="view" id="view-today">
+        <div class="today-grid">
+          <div class="tcard">
+            <h3><span class="dot blue"></span>今日发布的商标</h3>
+            <div class="mini-stat"><span class="num" id="todayPubNum">3</span><span class="lab">条 · 今天新增入库</span></div>
+            <div id="todayPubList" style="margin-top:12px"><div class="follow-item"><div class="fi-main"><div class="fi-name">晨光 <span class="clsbadge">第9类</span></div><div class="fi-sub">张敏 · 询价 12 次</div></div><span class="tag blue">在线</span></div><div class="follow-item"><div class="fi-main"><div class="fi-name">云海 <span class="clsbadge">第35类</span></div><div class="fi-sub">李想在 · 询价 5 次</div></div><span class="tag blue">在线</span></div><div class="follow-item"><div class="fi-main"><div class="fi-name">绿源 <span class="clsbadge">第11类</span></div><div class="fi-sub">王浩 · 询价 8 次</div></div><span class="tag blue">在线</span></div></div>
+          </div>
+          <div class="tcard">
+            <h3><span class="dot red"></span>需跟进（在线超 30 天）</h3>
+            <div class="mini-stat"><span class="num red" id="followNum">1</span><span class="lab">条 · 建议下架或推广</span></div>
+            <div id="followList" style="margin-top:12px"><div class="follow-item"><div class="fi-main"><div class="fi-name">智联 <span class="clsbadge">第42类</span></div><div class="fi-sub">已挂 35 天 · 询价仅 3 次</div></div><button class="btn sm danger" onclick="__toggle('4')">下架</button></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 数据概览 -->
+      <section class="view" id="view-stats">
+        <div class="stat-row">
+          <div class="stat"><div class="s-lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>在线商标</div><div class="s-num" id="stOnline">0<small> 个</small></div></div>
+          <div class="stat"><div class="s-lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"></path><path d="M7 14l4-4 3 3 5-6"></path></svg>累计询价</div><div class="s-num" id="stInq">0<small> 次</small></div></div>
+          <div class="stat"><div class="s-lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"></circle><path d="M3 20a6 6 0 0 1 12 0M16 11l2 2 4-4"></path></svg>发布人数</div><div class="s-num" id="stPub">0<small> 人</small></div></div>
+          <div class="stat"><div class="s-lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18"></path></svg>覆盖类别</div><div class="s-num" id="stCls">0<small> 类</small></div></div>
+        </div>
+        <div class="chart-row">
+          <div class="panel">
+            <h3>各类别商标数量 TOP 8</h3>
+            <div id="barChart"></div>
+          </div>
+          <div class="panel">
+            <h3>上架 / 下架占比</h3>
+            <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap">
+              <div id="donutChart"></div>
+              <div class="legend" id="donutLegend"></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:16px">
+          <h3>按发布人统计</h3>
+          <div id="pubStats"></div>
+        </div>
+      </section>
+
+      <!-- 商标资源库 -->
+      <section class="view active" id="view-library">
+        <div class="filter-bar">
+          <div class="filter-grid">
+            <div class="field"><label>关键字（名称/小项）</label><input type="text" id="fKw" placeholder="输入关键词"></div>
+            <div class="field"><label>类别（可多选）</label>
+              <div class="msel" id="msClass">
+                <button type="button" class="msel-btn" id="fClassBtn">全部类别</button>
+                <div class="msel-panel" id="fClassPanel" hidden="">
+                  <div class="msel-search"><input type="text" id="fClassSearch" placeholder="搜索类别号 / 名称"></div>
+                  <div class="msel-actions"><button type="button" class="btn sm ghost" id="fClassAll">全选</button><button type="button" class="btn sm ghost" id="fClassNone">清空</button></div>
+                  <div class="msel-list" id="fClassList"><label><input type="checkbox" value="1"><span>第1类</span><span class="cn">化学原料</span></label><label><input type="checkbox" value="2"><span>第2类</span><span class="cn">颜料油漆</span></label><label><input type="checkbox" value="3"><span>第3类</span><span class="cn">日化用品</span></label><label><input type="checkbox" value="4"><span>第4类</span><span class="cn">燃料油脂</span></label><label><input type="checkbox" value="5"><span>第5类</span><span class="cn">医药</span></label><label><input type="checkbox" value="6"><span>第6类</span><span class="cn">金属材料</span></label><label><input type="checkbox" value="7"><span>第7类</span><span class="cn">机械设备</span></label><label><input type="checkbox" value="8"><span>第8类</span><span class="cn">手工器械</span></label><label><input type="checkbox" value="9"><span>第9类</span><span class="cn">科学仪器</span></label><label><input type="checkbox" value="10"><span>第10类</span><span class="cn">医疗器械</span></label><label><input type="checkbox" value="11"><span>第11类</span><span class="cn">灯具空调</span></label><label><input type="checkbox" value="12"><span>第12类</span><span class="cn">运输工具</span></label><label><input type="checkbox" value="13"><span>第13类</span><span class="cn">军火烟火</span></label><label><input type="checkbox" value="14"><span>第14类</span><span class="cn">珠宝钟表</span></label><label><input type="checkbox" value="15"><span>第15类</span><span class="cn">乐器</span></label><label><input type="checkbox" value="16"><span>第16类</span><span class="cn">办公用品</span></label><label><input type="checkbox" value="17"><span>第17类</span><span class="cn">橡胶制品</span></label><label><input type="checkbox" value="18"><span>第18类</span><span class="cn">皮革皮具</span></label><label><input type="checkbox" value="19"><span>第19类</span><span class="cn">建筑材料</span></label><label><input type="checkbox" value="20"><span>第20类</span><span class="cn">家具</span></label><label><input type="checkbox" value="21"><span>第21类</span><span class="cn">厨房洁具</span></label><label><input type="checkbox" value="22"><span>第22类</span><span class="cn">绳网袋篷</span></label><label><input type="checkbox" value="23"><span>第23类</span><span class="cn">纱线丝</span></label><label><input type="checkbox" value="24"><span>第24类</span><span class="cn">布料床单</span></label><label><input type="checkbox" value="25"><span>第25类</span><span class="cn">服装鞋帽</span></label><label><input type="checkbox" value="26"><span>第26类</span><span class="cn">钮扣拉链</span></label><label><input type="checkbox" value="27"><span>第27类</span><span class="cn">地毯席垫</span></label><label><input type="checkbox" value="28"><span>第28类</span><span class="cn">健身器材</span></label><label><input type="checkbox" value="29"><span>第29类</span><span class="cn">食品</span></label><label><input type="checkbox" value="30"><span>第30类</span><span class="cn">方便食品</span></label><label><input type="checkbox" value="31"><span>第31类</span><span class="cn">农林生鲜</span></label><label><input type="checkbox" value="32"><span>第32类</span><span class="cn">啤酒饮料</span></label><label><input type="checkbox" value="33"><span>第33类</span><span class="cn">酒</span></label><label><input type="checkbox" value="34"><span>第34类</span><span class="cn">烟草烟具</span></label><label><input type="checkbox" value="35"><span>第35类</span><span class="cn">广告销售</span></label><label><input type="checkbox" value="36"><span>第36类</span><span class="cn">金融物管</span></label><label><input type="checkbox" value="37"><span>第37类</span><span class="cn">建筑修理</span></label><label><input type="checkbox" value="38"><span>第38类</span><span class="cn">通讯服务</span></label><label><input type="checkbox" value="39"><span>第39类</span><span class="cn">运输贮藏</span></label><label><input type="checkbox" value="40"><span>第40类</span><span class="cn">材料加工</span></label><label><input type="checkbox" value="41"><span>第41类</span><span class="cn">教育娱乐</span></label><label><input type="checkbox" value="42"><span>第42类</span><span class="cn">科技服务</span></label><label><input type="checkbox" value="43"><span>第43类</span><span class="cn">餐饮住宿</span></label><label><input type="checkbox" value="44"><span>第44类</span><span class="cn">医疗园艺</span></label><label><input type="checkbox" value="45"><span>第45类</span><span class="cn">社会服务</span></label></div>
+                </div>
+              </div>
+            </div>
+            <div class="field"><label>发布人</label><select id="fPub"><option value="">全部</option><option value="张敏">张敏</option><option value="李想在">李想在</option><option value="王浩">王浩</option><option value="赵晨">赵晨</option></select></div>
+            <div class="field"><label>状态</label><select id="fStatus"><option value="">全部</option><option value="online">在线</option><option value="offline">已下架</option></select></div>
+            <div class="field"><label>发布日期 起</label><input type="date" id="fDateFrom"></div>
+            <div class="field"><label>发布日期 至</label><input type="date" id="fDateTo"></div>
+            <div class="field"><label>询价次数 ≥</label><input type="number" id="fInqMin" min="0" placeholder="0"></div>
+            <div class="field"><label>询价次数 ≤</label><input type="number" id="fInqMax" min="0" placeholder="不限"></div>
+            <div class="field"><label>底价 ≥ ¥</label><input type="number" id="fPriceMin" min="0" placeholder="不限"></div>
+            <div class="field"><label>底价 ≤ ¥</label><input type="number" id="fPriceMax" min="0" placeholder="不限"></div>
+          </div>
+          <div class="filter-actions">
+            <button class="btn primary sm" id="btnFilter">应用筛选</button>
+            <button class="btn ghost sm" id="btnReset">重置</button>
+          </div>
+        </div>
+
+        <div class="list-head">
+          <span class="count" id="listCount">共 <b>5</b> 条（总 5 条）</span>
+          <select id="sortSel" class="sortsel" title="排序方式">
+            <option value="default">排序：综合</option>
+            <option value="date_desc">发布日期 新→旧</option>
+            <option value="date_asc">发布日期 旧→新</option>
+            <option value="price_desc">底价 高→低</option>
+            <option value="price_asc">底价 低→高</option>
+            <option value="inq_desc">询价 多→少</option>
+            <option value="inq_asc">询价 少→多</option>
+          </select>
+          <button class="btn sm primary" id="btnExportXls">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v5h5M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M8 13h8M8 17h6"></path></svg>导出 Excel</button>
+          <button class="btn sm" id="btnClearSample" style="margin-left:auto">清空示例数据</button>
+          <button class="btn danger sm" id="btnClearAll">清空全部数据</button>
+        </div>
+        <div class="grid-cards" id="cardList"><div class="tm"><label class="pick" title="勾选后可在导出时指定导出此商标"><input type="checkbox" class="pickbox" data-id="1"></label><div class="thumb" data-id="1" onclick="__zoom(this)"><div class="noimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>暂无图片</div><div class="status-strip"><span class="tag green">在线</span></div></div><div class="body"><div class="nm">晨光<span class="clsbadge">第9类·科学仪器</span></div><div class="meta"><div class="row"><span class="k">发布人</span><span>张敏</span></div><div class="row"><span class="k">日期</span><span>2026-08-14</span></div><div class="row"><span class="k">底价</span><span style="color:var(--gold);font-weight:700">¥12,000</span></div></div><div class="sub">计算机软件(0901)；数据处理设备(0901)</div><div class="inq"><span class="n">12<small> 次询价</small></span><button class="btn sm" onclick="__inc('1')">+1 询价</button></div></div><div class="acts"><button class="btn sm" onclick="__edit('1')">编辑</button><button class="btn sm" onclick="__toggle('1')">下架</button><button class="btn sm danger" onclick="__del('1')">删除</button></div></div><div class="tm"><label class="pick" title="勾选后可在导出时指定导出此商标"><input type="checkbox" class="pickbox" data-id="3"></label><div class="thumb" data-id="3" onclick="__zoom(this)"><div class="noimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>暂无图片</div><div class="status-strip"><span class="tag green">在线</span></div></div><div class="body"><div class="nm">绿源<span class="clsbadge">第11类·灯具空调</span></div><div class="meta"><div class="row"><span class="k">发布人</span><span>王浩</span></div><div class="row"><span class="k">日期</span><span>2026-08-14</span></div><div class="row"><span class="k">底价</span><span style="color:var(--gold);font-weight:700">¥35,000</span></div></div><div class="sub">照明设备(1101)；空气净化(1106)</div><div class="inq"><span class="n">8<small> 次询价</small></span><button class="btn sm" onclick="__inc('3')">+1 询价</button></div></div><div class="acts"><button class="btn sm" onclick="__edit('3')">编辑</button><button class="btn sm" onclick="__toggle('3')">下架</button><button class="btn sm danger" onclick="__del('3')">删除</button></div></div><div class="tm"><label class="pick" title="勾选后可在导出时指定导出此商标"><input type="checkbox" class="pickbox" data-id="2"></label><div class="thumb" data-id="2" onclick="__zoom(this)"><div class="noimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>暂无图片</div><div class="status-strip"><span class="tag green">在线</span></div></div><div class="body"><div class="nm">云海<span class="clsbadge">第35类·广告销售</span></div><div class="meta"><div class="row"><span class="k">发布人</span><span>李想在</span></div><div class="row"><span class="k">日期</span><span>2026-08-14</span></div><div class="row"><span class="k">底价</span><span style="color:var(--gold);font-weight:700">¥8,800</span></div></div><div class="sub">广告代理(3501)；商业管理(3502)</div><div class="inq"><span class="n">5<small> 次询价</small></span><button class="btn sm" onclick="__inc('2')">+1 询价</button></div></div><div class="acts"><button class="btn sm" onclick="__edit('2')">编辑</button><button class="btn sm" onclick="__toggle('2')">下架</button><button class="btn sm danger" onclick="__del('2')">删除</button></div></div><div class="tm"><label class="pick" title="勾选后可在导出时指定导出此商标"><input type="checkbox" class="pickbox" data-id="5"></label><div class="thumb" data-id="5" onclick="__zoom(this)"><div class="noimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>暂无图片</div><div class="status-strip"><span class="tag green">在线</span></div></div><div class="body"><div class="nm">星河<span class="clsbadge">第25类·服装鞋帽</span></div><div class="meta"><div class="row"><span class="k">发布人</span><span>赵晨</span></div><div class="row"><span class="k">日期</span><span>2026-08-12</span></div><div class="row"><span class="k">底价</span><span style="color:var(--gold);font-weight:700">¥50,000</span></div></div><div class="sub">服装(2501)；鞋(2507)</div><div class="inq"><span class="n">20<small> 次询价</small></span><button class="btn sm" onclick="__inc('5')">+1 询价</button></div></div><div class="acts"><button class="btn sm" onclick="__edit('5')">编辑</button><button class="btn sm" onclick="__toggle('5')">下架</button><button class="btn sm danger" onclick="__del('5')">删除</button></div></div><div class="tm"><label class="pick" title="勾选后可在导出时指定导出此商标"><input type="checkbox" class="pickbox" data-id="4"></label><div class="thumb" data-id="4" onclick="__zoom(this)"><div class="noimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-5-5L5 21"></path></svg>暂无图片</div><div class="status-strip"><span class="tag green">在线</span></div></div><div class="body"><div class="nm">智联<span class="clsbadge">第42类·科技服务</span></div><div class="meta"><div class="row"><span class="k">发布人</span><span>张敏</span></div><div class="row"><span class="k">日期</span><span>2026-07-10</span></div><div class="row"><span class="k">底价</span><span style="color:var(--gold);font-weight:700">面议</span></div></div><div class="sub">技术服务(4209)；软件设计(4220)</div><div class="inq"><span class="n">3<small> 次询价</small></span><button class="btn sm" onclick="__inc('4')">+1 询价</button></div></div><div class="acts"><button class="btn sm" onclick="__edit('4')">编辑</button><button class="btn sm" onclick="__toggle('4')">下架</button><button class="btn sm danger" onclick="__del('4')">删除</button></div></div></div>
+      </section>
+    </div>
+  </main>
+
+  <nav class="bottomtab">
+    <button data-view="today" class="">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg>今日</button>
+    <button data-view="stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>概览</button>
+    <button data-view="library" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>资源库</button>
+  </nav>
+</div>
+
+<!-- 发布/编辑 弹窗 -->
+<div class="mask" id="maskForm">
+  <div class="modal">
+    <div class="m-head"><h3 id="formTitle">发布商标</h3><button class="x" id="formClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="m-body">
+      <input type="hidden" id="fId">
+      <div class="field"><label>商标名称 *</label><input type="text" id="fName" placeholder="如：晨光" maxlength="40"></div>
+      <div class="field"><label>商标图片（可上传多张，存原图；超大图自动压到 1600px 以适配仓库限制）</label>
+        <div class="imgpick">
+          <div class="prev-grid" id="imgPrev"></div>
+          <div class="imgbtns">
+            <input type="file" id="fImg" accept="image/*" multiple="" hidden="">
+            <button class="btn sm" id="btnPickImg">添加图片</button>
+            <button class="btn sm" id="btnClearImg" type="button">清空图片</button>
+          </div>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label>类别（1-45）*</label><select id="fClassSel"><option value="">请选择类别</option><option value="1">第1类 · 化学原料</option><option value="2">第2类 · 颜料油漆</option><option value="3">第3类 · 日化用品</option><option value="4">第4类 · 燃料油脂</option><option value="5">第5类 · 医药</option><option value="6">第6类 · 金属材料</option><option value="7">第7类 · 机械设备</option><option value="8">第8类 · 手工器械</option><option value="9">第9类 · 科学仪器</option><option value="10">第10类 · 医疗器械</option><option value="11">第11类 · 灯具空调</option><option value="12">第12类 · 运输工具</option><option value="13">第13类 · 军火烟火</option><option value="14">第14类 · 珠宝钟表</option><option value="15">第15类 · 乐器</option><option value="16">第16类 · 办公用品</option><option value="17">第17类 · 橡胶制品</option><option value="18">第18类 · 皮革皮具</option><option value="19">第19类 · 建筑材料</option><option value="20">第20类 · 家具</option><option value="21">第21类 · 厨房洁具</option><option value="22">第22类 · 绳网袋篷</option><option value="23">第23类 · 纱线丝</option><option value="24">第24类 · 布料床单</option><option value="25">第25类 · 服装鞋帽</option><option value="26">第26类 · 钮扣拉链</option><option value="27">第27类 · 地毯席垫</option><option value="28">第28类 · 健身器材</option><option value="29">第29类 · 食品</option><option value="30">第30类 · 方便食品</option><option value="31">第31类 · 农林生鲜</option><option value="32">第32类 · 啤酒饮料</option><option value="33">第33类 · 酒</option><option value="34">第34类 · 烟草烟具</option><option value="35">第35类 · 广告销售</option><option value="36">第36类 · 金融物管</option><option value="37">第37类 · 建筑修理</option><option value="38">第38类 · 通讯服务</option><option value="39">第39类 · 运输贮藏</option><option value="40">第40类 · 材料加工</option><option value="41">第41类 · 教育娱乐</option><option value="42">第42类 · 科技服务</option><option value="43">第43类 · 餐饮住宿</option><option value="44">第44类 · 医疗园艺</option><option value="45">第45类 · 社会服务</option></select></div>
+        <div class="field"><label>发布人 *</label><input type="text" id="fPublisher" placeholder="组员姓名" maxlength="20"></div>
+      </div>
+      <div class="field"><label>小项（保护范围）</label><textarea id="fSub" rows="2" placeholder="如：计算机软件(0901)；数据处理设备(0901)"></textarea></div>
+      <div class="two">
+        <div class="field"><label>发布日期</label><input type="date" id="fDate"></div>
+        <div class="field"><label>询价次数</label><input type="number" id="fInq" min="0" value="0"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>底价（¥，0 = 面议）</label><input type="number" id="fPrice" min="0" value="0" step="100"></div>
+        <div class="field"><label>状态</label>
+          <div class="seg">
+            <input type="radio" name="fStatusRadio" id="stOn" value="online" checked=""><label for="stOn">在线</label>
+            <input type="radio" name="fStatusRadio" id="stOff" value="offline"><label for="stOff">已下架</label>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>备注</label><textarea id="fNote" rows="2" placeholder="选填：来源、客户意向等"></textarea></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn" id="formCancel">取消</button>
+      <button class="btn primary" id="formSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 确认框 -->
+<div class="mask confirm" id="maskConfirm">
+  <div class="modal" style="max-width:380px">
+    <div class="m-body">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg></div>
+      <div class="txt" id="confirmTxt"></div>
+    </div>
+    <div class="m-foot" style="justify-content:center">
+      <button class="btn" id="confirmCancel">取消</button>
+      <button class="btn danger" id="confirmOk">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 图片放大 -->
+<div class="imgzoom" id="maskImg">
+  <button class="x" id="imgClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+  <button class="nav prev" id="imgPrevBtn" aria-label="上一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"></path></svg></button>
+  <img id="bigImg" alt="商标图片放大">
+  <button class="nav next" id="imgNextBtn" aria-label="下一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"></path></svg></button>
+  <div class="imgtool"><button id="imgDownload">⬇ 下载原图</button><button id="imgCopy">⧉ 复制原图</button></div>
+  <div class="imgidx" id="imgIdx"></div>
+</div>
+
+<div class="toast" id="toast">配置已保存，正在连接并同步…</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  "use strict";
+  var KEY='wb_trademark_list', SEQ='wb_trademark_seq';
+  var CLASS_NAMES={1:"化学原料",2:"颜料油漆",3:"日化用品",4:"燃料油脂",5:"医药",6:"金属材料",7:"机械设备",8:"手工器械",9:"科学仪器",10:"医疗器械",11:"灯具空调",12:"运输工具",13:"军火烟火",14:"珠宝钟表",15:"乐器",16:"办公用品",17:"橡胶制品",18:"皮革皮具",19:"建筑材料",20:"家具",21:"厨房洁具",22:"绳网袋篷",23:"纱线丝",24:"布料床单",25:"服装鞋帽",26:"钮扣拉链",27:"地毯席垫",28:"健身器材",29:"食品",30:"方便食品",31:"农林生鲜",32:"啤酒饮料",33:"酒",34:"烟草烟具",35:"广告销售",36:"金融物管",37:"建筑修理",38:"通讯服务",39:"运输贮藏",40:"材料加工",41:"教育娱乐",42:"科技服务",43:"餐饮住宿",44:"医疗园艺",45:"社会服务"};
+  var PENDING={}; // pending confirm callbacks
+
+  // ---------- storage ----------
+  function load(){ return DATA; }
+  function save(a){ DATA=a; persist(); }
+  var DATA=[], DATA_SHA=null, DATA_READY=false, SAVING=false, SYNC_TIMER=null;
+  var META={gate:"",access:[]}, META_SHA=null;
+  var GATE=""; var GATE_KEY='wb_tm_gate_unlock';
+  function getCfg(){ try{return JSON.parse(localStorage.getItem('wb_tm_cfg'))||{}}catch(e){return{}} }
+  function saveCfg(c){ localStorage.setItem('wb_tm_cfg',JSON.stringify(c)); }
+  var CFG=getCfg();
+  function cfgValid(){ return !!(CFG.owner && CFG.repo && CFG.pat); }
+  function readCache(){ try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]} }
+  function ghHeaders(){ var h={'Accept':'application/vnd.github+json'}; if(CFG.pat) h['Authorization']='Bearer '+CFG.pat; return h; }
+  async function ghFetchData(){
+    var path='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/contents/data.json?ref='+encodeURIComponent(CFG.branch||'main');
+    var r=await fetch('https://api.github.com'+path,{headers:ghHeaders()});
+    if(r.status===404) return {data:[],sha:null};
+    if(!r.ok) throw new Error('读取失败('+r.status+')');
+    var j=await r.json();
+    var txt=decodeURIComponent(escape(atob(j.content.replace(/\s/g,''))));
+    return {data:JSON.parse(txt), sha:j.sha};
+  }
+  async function ghPushData(data, sha, msg){
+    var path='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/contents/data.json';
+    var body={ message:msg||'update', content:btoa(unescape(encodeURIComponent(JSON.stringify(data)))), branch:CFG.branch||'main' };
+    if(sha) body.sha=sha;
+    var r=await fetch('https://api.github.com'+path,{method:'PUT',headers:Object.assign(ghHeaders(),{'Content-Type':'application/json'}),body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('写入失败('+r.status+')');
+    var j=await r.json();
+    return {sha:j.content.sha};
+  }
+  async function ghFetchMeta(){
+    var path='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/contents/meta.json?ref='+encodeURIComponent(CFG.branch||'main');
+    var r=await fetch('https://api.github.com'+path,{headers:ghHeaders()});
+    if(r.status===404) return {data:{gate:"",access:[]},sha:null};
+    if(!r.ok) throw new Error('读取失败('+r.status+')');
+    var j=await r.json();
+    var txt=decodeURIComponent(escape(atob(j.content.replace(/\s/g,''))));
+    return {data:JSON.parse(txt), sha:j.sha};
+  }
+  async function ghPushMeta(meta, sha, msg){
+    var path='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/contents/meta.json';
+    var body={ message:msg||'meta', content:btoa(unescape(encodeURIComponent(JSON.stringify(meta)))), branch:CFG.branch||'main' };
+    if(sha) body.sha=sha;
+    var r=await fetch('https://api.github.com'+path,{method:'PUT',headers:Object.assign(ghHeaders(),{'Content-Type':'application/json'}),body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('写入失败('+r.status+')');
+    var j=await r.json();
+    return {sha:j.content.sha};
+  }
+  // ---------- 图片原图（仓库独立文件 + 本地缓存） ----------
+  var imgCache={};
+  var IMG_CACHE_KEY='wb_tm_imgcache';
+  var LOADING='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+  function loadImgCache(){ try{ imgCache=JSON.parse(localStorage.getItem(IMG_CACHE_KEY)||'{}')||{}; }catch(e){ imgCache={}; } }
+  function saveImgCache(){ try{ localStorage.setItem(IMG_CACHE_KEY, JSON.stringify(imgCache)); }catch(e){ try{ imgCache={}; localStorage.setItem(IMG_CACHE_KEY,'{}'); }catch(e2){} } }
+  function isDirect(s){ return typeof s==='string' && (s.indexOf('data:')===0 || s.indexOf('http')===0); }
+  function mimeOf(p){ p=(p||'').toLowerCase(); if(p.endsWith('.png'))return 'image/png'; if(p.endsWith('.gif'))return 'image/gif'; if(p.endsWith('.webp'))return 'image/webp'; if(p.endsWith('.bmp'))return 'image/bmp'; return 'image/jpeg'; }
+  function escAttr(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;'); }
+  function setImg(el, src){
+    if(!el) return;
+    if(isDirect(src)){ el.src=src; return; }
+    if(imgCache[src]){ el.src=imgCache[src]; return; }
+    el.src=LOADING; loadImg(src);
+  }
+  async function loadImg(src){
+    if(imgCache[src]) return imgCache[src];
+    if(!cfgValid()) return null;
+    try{
+      var d=await ghFetchRaw(src); imgCache[src]=d; saveImgCache();
+      var els=document.querySelectorAll('img[data-imgpath]');
+      for(var i=0;i<els.length;i++){ if(els[i].getAttribute('data-imgpath')===src) els[i].src=d; }
+      var big=document.getElementById('bigImg');
+      if(big && big.getAttribute('data-imgpath')===src) big.src=d;
+      return d;
+    }catch(e){ return null; }
+  }
+  function hydrateImgs(){ var els=document.querySelectorAll('img[data-imgpath]'); for(var i=0;i<els.length;i++){ var p=els[i].getAttribute('data-imgpath'); if(p) setImg(els[i], p); } }
+  async function ghFetchRaw(path){
+    var p='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/contents/'+path+'?ref='+encodeURIComponent(CFG.branch||'main');
+    for(var i=0;i<3;i++){
+      try{
+        var r=await fetch('https://api.github.com'+p,{headers:ghHeaders()});
+        if(r.ok){ var j=await r.json(); return 'data:'+mimeOf(path)+';base64,'+j.content.replace(/\s/g,''); }
+        if(r.status===403||r.status===429){ await sleep(800*(i+1)); continue; }
+        throw new Error('img '+r.status);
+      }catch(e){ if(i<2){ await sleep(800*(i+1)); continue; } throw e; }
+    }
+  }
+  async function ghPutFile(path, b64, msg){
+    var p='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/contents/'+path;
+    var body={message:msg||'img', content:b64, branch:CFG.branch||'main'};
+    for(var i=0;i<3;i++){
+      try{
+        var r=await fetch('https://api.github.com'+p,{method:'PUT',headers:Object.assign(ghHeaders(),{'Content-Type':'application/json'}),body:JSON.stringify(body)});
+        if(r.ok) return await r.json();
+        if(r.status===403||r.status===429){ await sleep(800*(i+1)); continue; }
+        throw new Error('img upload '+r.status);
+      }catch(e){ if(i<2){ await sleep(800*(i+1)); continue; } throw e; }
+    }
+  }
+  // 推文件：存在则带 sha 更新，不存在则创建（用于发布 index.html）
+  async function ghPutUpsert(path, b64, msg){
+    var p='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/contents/'+path;
+    var sha=null;
+    try{ var g=await fetch('https://api.github.com'+p+'?ref='+encodeURIComponent(CFG.branch||'main'),{headers:ghHeaders()}); if(g.ok){ var j=await g.json(); sha=j.sha; } }catch(e){}
+    var body={message:msg||'put', content:b64, branch:CFG.branch||'main'};
+    if(sha) body.sha=sha;
+    for(var i=0;i<3;i++){
+      try{
+        var r=await fetch('https://api.github.com'+p,{method:'PUT',headers:Object.assign(ghHeaders(),{'Content-Type':'application/json'}),body:JSON.stringify(body)});
+        if(r.ok) return await r.json();
+        if(r.status===409){ var g2=await fetch('https://api.github.com'+p+'?ref='+encodeURIComponent(CFG.branch||'main'),{headers:ghHeaders()}); if(g2.ok){ var j2=await g2.json(); body.sha=j2.sha; } else { delete body.sha; } continue; }
+        if(r.status===403||r.status===429){ await sleep(800*(i+1)); continue; }
+        throw new Error('put '+r.status);
+      }catch(e){ if(i<2){ await sleep(800*(i+1)); continue; } throw e; }
+    }
+  }
+  // 读取当前页面纯净源码（优先 fetch 自身，file:// 回退到 DOM 并清除运行时弹窗状态）
+  async function fetchSelf(){
+    try{
+      var r=await fetch(location.href,{cache:'no-store'});
+      if(r.ok){ var t=await r.text(); if(t && t.length>2000) return t; }
+    }catch(e){}
+    var clone=document.documentElement.cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll('.open'),function(n){ n.classList.remove('open'); });
+    // file:// 回退：清空设置表单（含 PAT）与密码框，避免敏感信息/残留值泄露到公开页面
+    Array.prototype.forEach.call(clone.querySelectorAll('input'),function(inp){
+      if(inp.type==='password' || (inp.id&&inp.id.indexOf('set')===0)) inp.value='';
+    });
+    return '<!DOCTYPE html>\n'+clone.outerHTML;
+  }
+  async function publishToPages(){
+    var box=document.getElementById('pagesResult');
+    if(!cfgValid()){ box.innerHTML='<span style="color:#c0392b">请先在上方填好 GitHub 配置并点「保存并连接」</span>'; return; }
+    try{
+      box.textContent='正在读取当前页面源码…';
+      var src=await fetchSelf();
+      var b64=btoa(unescape(encodeURIComponent(src)));
+      box.textContent='已读取源码（'+Math.round(b64.length/1024)+' KB），正在推送到仓库根目录 index.html…';
+      await ghPutUpsert('index.html', b64, 'publish app to github pages');
+      box.textContent='网页文件已推送✓ 正在启用 GitHub Pages…';
+      var p='/repos/'+encodeURIComponent(CFG.owner)+'/'+encodeURIComponent(CFG.repo)+'/pages';
+      var rb=JSON.stringify({source:{branch:CFG.branch||'main', path:'/'}});
+      var r=await fetch('https://api.github.com'+p,{method:'POST',headers:Object.assign(ghHeaders(),{'Content-Type':'application/json'}),body:rb});
+      if(r.ok || r.status===409){
+        var url='https://'+CFG.owner+'.github.io/'+CFG.repo+'/';
+        box.innerHTML='🎉 <b>已启用 GitHub Pages！</b><br>永久链接：<a href="'+url+'" target="_blank" style="color:#c8a04f;font-weight:600">'+url+'</a><br><span style="color:#5b6573">（首次生效需 1–2 分钟，之后刷新即用，永不打不开）</span>';
+        toast('🎉 GitHub Pages 已发布！永久链接：'+url,8000);
+        window.__pagesUrl=url;
+        return;
+      }
+      if(r.status===403){ throw new Error('NO_PAGES_PERM'); }
+      if(r.status===404){ throw new Error('NOT_FOUND'); }
+      var j=await r.json().catch(function(){});
+      throw new Error('HTTP '+r.status+' '+((j&&j.message)||''));
+    }catch(e){
+      var box2=document.getElementById('pagesResult');
+      if(e.message==='NO_PAGES_PERM'){
+        box2.innerHTML='✅ <b>网页文件已成功推送到仓库根目录 index.html</b>（已自动完成）。<br>但你的 PAT 没有「Pages」权限，还需在 GitHub 网页点一下启用（<b>仅需这一次</b>）：<br>① 打开你的仓库 → <b>Settings → Pages</b>；<br>② Source 选 <b>Deploy from a branch</b> → 分支选 <b>'+(CFG.branch||'main')+'</b> → 目录选 <b>/ (root)</b> → 点 <b>Save</b>；<br>③ 等 1–2 分钟，访问 <code style="background:#eef1f6;padding:1px 5px;border-radius:4px">https://'+CFG.owner+'.github.io/'+CFG.repo+'/</code> 即可。<br><span style="color:#5b6573">之后更新网页，回来点这个按钮即可，不用再手动。</span>';
+        toast('网页已推送✓ 还需在 GitHub 网页启用一次 Pages',7000);
+        return;
+      }
+      if(e.message==='NOT_FOUND'){
+        box2.innerHTML='⚠️ 启用失败（接口 404）：可能该仓库未开启 Pages 功能，或 PAT 权限不足。请按上面「NO_PAGES_PERM」方式去网页手动启用。';
+        return;
+      }
+      box2.innerHTML='<span style="color:#c0392b">发布失败：'+((e&&e.message)||e)+'</span>';
+    }
+  }
+  async function getImgData(src){
+    if(!src) return null;
+    if(src.indexOf('data:')===0) return src;
+    if(src.indexOf('http')===0) return await urlToData(src);
+    if(imgCache[src]) return imgCache[src];
+    return await loadImg(src);
+  }
+  async function urlToData(u){ var r=await fetch(u); var b=await r.blob(); return await blobToData(b); }
+  async function blobToData(b){ return await new Promise(function(res){ var rd=new FileReader(); rd.onload=function(){res(rd.result)}; rd.readAsDataURL(b); }); }
+  function extFrom(d){ var m=/data:(image\/[a-z]+)/.exec(d||''); var t=m?m[1]:'image/jpeg'; return t==='image/png'?'.png':(t==='image/gif'?'.gif':(t==='image/webp'?'.webp':'.jpg')); }
+  async function downloadImg(src){
+    try{
+      var d=await getImgData(src); if(!d){ toast('图片暂不可用'); return; }
+      var a=document.createElement('a'); a.href=d; a.download='商标图片'+extFrom(d); document.body.appendChild(a); a.click(); a.remove();
+      toast('已开始下载原图');
+    }catch(e){ toast('下载失败'); }
+  }
+  async function copyImg(src){
+    try{
+      var d=await getImgData(src); if(!d){ toast('图片暂不可用'); return; }
+      var blob=await (await fetch(d)).blob();
+      try{ await navigator.clipboard.write([new ClipboardItem({[blob.type]: blob})]); }
+      catch(e2){
+        var png=await new Promise(function(res){ var im=new Image(); im.onload=function(){ var c=document.createElement('canvas'); c.width=im.width; c.height=im.height; c.getContext('2d').drawImage(im,0,0); c.toBlob(function(b){res(b)},'image/png'); }; im.src=d; });
+        await navigator.clipboard.write([new ClipboardItem({'image/png': png})]);
+      }
+      toast('已复制原图到剪贴板');
+    }catch(e){ toast('复制失败（浏览器可能不支持或权限不足）'); }
+  }
+
+  async function saveMeta(){
+    try{
+      var r=await ghPushMeta(META, META_SHA, 'access log by '+((CFG.who)||'user'));
+      META_SHA=r.sha;
+    }catch(e){
+      try{
+        var rr=await ghFetchMeta(); META_SHA=rr.sha; META.access=META.access||[];
+        var r2=await ghPushMeta(META, META_SHA, 'access log retry');
+        META_SHA=r2.sha;
+      }catch(e2){ /* 忽略：访问记录写入失败不影响主功能 */ }
+    }
+  }
+  // 推送：多次重试（应对并发写入 409 与网络/限流抖动），每次失败重新拉取 sha 再试
+  async function pushDataWithRetry(data){
+    var lastErr=null;
+    for(var attempt=0; attempt<6; attempt++){
+      try{
+        var r=await ghPushData(data, DATA_SHA, 'update by '+((CFG.who)||'user')+' '+new Date().toLocaleString());
+        DATA_SHA=r.sha; return true;
+      }catch(e){
+        lastErr=e;
+        try{ var rr=await ghFetchData(); DATA_SHA=rr.sha; }catch(e2){}
+        await sleep(500*(attempt+1));
+      }
+    }
+    return false;
+  }
+  async function persist(){
+    localStorage.setItem(KEY, JSON.stringify(DATA)); // 本地缓存兜底
+    if(!cfgValid()) return;
+    SAVING=true;
+    try{
+      var ok=await pushDataWithRetry(DATA);
+      if(!ok) toast('保存到 GitHub 失败（已存本地缓存，稍后会自动重试）');
+    }catch(e){ toast('保存到 GitHub 失败：'+((e&&e.message)||e)+'（已存本地缓存）'); }
+    finally{ SAVING=false; }
+  }
+  // 把本地缓存中"云端没有"的记录合并回来，避免推送失败/刷新时记录丢失
+  function mergeLocalRecords(serverData){
+    var L=readCache(); if(!L||!L.length) return {data:serverData, changed:false};
+    var ids={}; serverData.forEach(function(x){ if(x&&x.id!=null) ids[String(x.id)]=true; });
+    var changed=false; var out=serverData.slice();
+    L.forEach(function(x){ if(x&&x.id!=null && !ids[String(x.id)]){ out.push(x); changed=true; } });
+    return {data:out, changed:changed};
+  }
+  // 把远端"本地没有"的记录合并进本地（保留本地编辑、不覆盖他人新增），用于本地有改动时的推送前合并，避免误删他人记录
+  function mergeRemoteIntoLocal(remoteData){
+    if(!remoteData||!remoteData.length) return 0;
+    var ids={}; DATA.forEach(function(x){ if(x&&x.id!=null) ids[String(x.id)]=true; });
+    var added=0;
+    remoteData.forEach(function(x){ if(x&&x.id!=null && !ids[String(x.id)]){ DATA.push(x); added++; } });
+    return added;
+  }
+  async function resolveGate(){
+    GATE="";
+    if(cfgValid()){
+      try{ var rr=await ghFetchMeta(); META=rr.data||{gate:"",access:[]}; META_SHA=rr.sha; GATE=META.gate||""; }
+      catch(e){ META={gate:"",access:[]}; META_SHA=null; GATE=""; }
+    }else{
+      META={gate:CFG.gate||"", access:[]}; GATE=CFG.gate||"";
+    }
+  }
+  function isLocked(){ return !!GATE && localStorage.getItem(GATE_KEY)!==GATE; }
+  async function boot(){
+    await resolveGate();
+    if(isLocked()){ document.body.classList.add('app-locked'); showLock(); return; }
+    enterApp();
+  }
+  async function enterApp(){
+    if(cfgValid()){
+      try{ var rr=await ghFetchData(); DATA=rr.data; DATA_SHA=rr.sha; }
+      catch(e){ DATA=readCache(); toast('GitHub 读取失败，使用本地缓存：'+e.message); }
+    }else{
+      DATA=readCache();
+      if(!DATA.length) toast('未配置 GitHub 仓库，请在「设置」中配置以启用多人实时共享');
+    }
+    // 合并本地缓存中云端没有的记录（防止上次推送失败/刷新时记录丢失）
+    if(cfgValid()){
+      var m=mergeLocalRecords(DATA);
+      if(m.changed){ DATA=m.data; try{ await persist(); }catch(e){} }
+    }
+    var firstRun=(DATA_SHA===null && DATA.length===0);
+    if(firstRun){ seed(); }
+    DATA_READY=true;
+    document.body.classList.remove('app-locked');
+    refreshPubFilter(); renderToday(); renderBackup();
+    if(document.getElementById('view-stats').classList.contains('active')) renderStats();
+    if(document.getElementById('view-library').classList.contains('active')) renderLibrary();
+    if(cfgValid()) startSync();
+    recordAccess();
+  }
+  function recordAccess(){
+    if(!GATE) return; // 未设访问口令则不记录
+    var entry={who:CFG.who||'匿名', t:new Date().toISOString()};
+    if(cfgValid()){
+      META.access=META.access||[];
+      META.access.push(entry);
+      if(META.access.length>200) META.access=META.access.slice(-200);
+      saveMeta();
+    }else{
+      var arr=JSON.parse(localStorage.getItem('wb_tm_access')||'[]');
+      arr.push(entry); if(arr.length>200) arr=arr.slice(-200);
+      localStorage.setItem('wb_tm_access',JSON.stringify(arr));
+    }
+  }
+  function startSync(){
+    if(SYNC_TIMER) clearInterval(SYNC_TIMER);
+    var sec=Math.max(2, Math.min(60, parseInt(CFG.syncSec||'5',10)||5));
+    SYNC_TIMER=setInterval(syncOnce, sec*1000);
+  }
+  async function syncOnce(){
+    if(!cfgValid() || SAVING) return;
+    try{
+      var r=await ghFetchData();
+      var localDirty=JSON.stringify(DATA)!==JSON.stringify(readCache());
+      if(r.sha!==DATA_SHA && !localDirty){
+        var m=mergeLocalRecords(r.data);
+        DATA=m.data; DATA_SHA=r.sha;
+        if(m.changed){ SAVING=true; try{ await pushDataWithRetry(DATA); }catch(e){} finally{ SAVING=false; } }
+        if(document.getElementById('maskForm').classList.contains('open')||document.getElementById('maskExport').classList.contains('open')||document.getElementById('maskSettings').classList.contains('open')) return;
+        refreshPubFilter(); renderToday();
+        if(document.getElementById('view-stats').classList.contains('active')) renderStats();
+        if(document.getElementById('view-library').classList.contains('active')) renderLibrary();
+        toast('已同步其他人最新数据');
+      } else if(localDirty){
+        // 本地有未推送改动（如后台图片刚上传完成）：拉取远端并合并他人新增记录后再推送，确保可靠上云、不丢失
+        try{ var rr=await ghFetchData(); mergeRemoteIntoLocal(rr.data); localStorage.setItem(KEY, JSON.stringify(DATA)); }catch(e2){}
+        SAVING=true; try{ await pushDataWithRetry(DATA); }catch(e2){} finally{ SAVING=false; }
+      }
+    }catch(e){}
+  }
+  function getSeq(){ return parseInt(localStorage.getItem(SEQ)||'0',10); }
+  function setSeq(n){ localStorage.setItem(SEQ,String(n)); }
+  function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  function pad(n){ return n<10?'0'+n:''+n; }
+  function daysBetween(a,b){ var da=new Date(a), db=new Date(b); return Math.round((db-da)/86400000); }
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  // ---------- toast ----------
+  var toastTimer;
+  function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove('show')},2200); }
+
+  // ---------- seed ----------
+  function seed(){
+    var t=todayStr(), y=new Date(); y.setDate(y.getDate()-35); var old=y.getFullYear()+'-'+pad(y.getMonth()+1)+'-'+pad(y.getDate());
+    var y2=new Date(); y2.setDate(y2.getDate()-2); var d2=y2.getFullYear()+'-'+pad(y2.getMonth()+1)+'-'+pad(y2.getDate());
+    var data=[
+      {id:1,name:"晨光",cls:9,sub:"计算机软件(0901)；数据处理设备(0901)",publisher:"张敏",date:t,inq:12,price:12000,status:"online",note:"客户意向较强"},
+      {id:2,name:"云海",cls:35,sub:"广告代理(3501)；商业管理(3502)",publisher:"李想在",date:t,inq:5,price:8800,status:"online",note:""},
+      {id:3,name:"绿源",cls:11,sub:"照明设备(1101)；空气净化(1106)",publisher:"王浩",date:t,inq:8,price:35000,status:"online",note:""},
+      {id:4,name:"智联",cls:42,sub:"技术服务(4209)；软件设计(4220)",publisher:"张敏",date:old,inq:3,price:0,status:"online",note:"长期未跟进"},
+      {id:5,name:"星河",cls:25,sub:"服装(2501)；鞋(2507)",publisher:"赵晨",date:d2,inq:20,price:50000,status:"online",note:"高询价，待报价"}
+    ];
+    save(data); setSeq(5);
+  }
+
+  // ---------- view switch ----------
+  function switchView(v){
+    document.querySelectorAll('.view').forEach(function(s){s.classList.remove('active')});
+    document.getElementById('view-'+v).classList.add('active');
+    document.querySelectorAll('.nav button,.bottomtab button').forEach(function(b){ b.classList.toggle('active', b.dataset.view===v); });
+    if(v==='stats') renderStats(); if(v==='library') renderLibrary(); if(v==='today') renderToday();
+  }
+  document.querySelectorAll('.nav button,.bottomtab button').forEach(function(b){ b.addEventListener('click',function(){switchView(b.dataset.view)}); });
+
+  // ---------- 今日动态 ----------
+  function renderToday(){
+    var data=load(), t=todayStr();
+    var pubToday=data.filter(function(x){return x.date===t});
+    document.getElementById('todayPubNum').textContent=pubToday.length;
+    var pl=document.getElementById('todayPubList');
+    pl.innerHTML = pubToday.length? pubToday.slice(0,6).map(function(x){
+      return '<div class="follow-item"><div class="fi-main"><div class="fi-name">'+esc(x.name)+' <span class="clsbadge">第'+x.cls+'类</span></div><div class="fi-sub">'+esc(x.publisher)+' · 询价 '+x.inq+' 次</div></div><span class="tag blue">在线</span></div>';
+    }).join('') : '<div class="empty">今天还没有新发布的商标</div>';
+
+    var follow=data.filter(function(x){return x.status==='online' && daysBetween(x.date,t)>30});
+    document.getElementById('followNum').textContent=follow.length;
+    var fl=document.getElementById('followList');
+    fl.innerHTML = follow.length? follow.slice(0,8).map(function(x){
+      var d=daysBetween(x.date,t);
+      return '<div class="follow-item"><div class="fi-main"><div class="fi-name">'+esc(x.name)+' <span class="clsbadge">第'+x.cls+'类</span></div><div class="fi-sub">已挂 '+d+' 天 · 询价仅 '+x.inq+' 次</div></div><button class="btn sm danger" onclick="__toggle(\''+x.id+'\')">下架</button></div>';
+    }).join('') : '<div class="empty">暂无长期挂售商标，状态良好 ✓</div>';
+  }
+
+  // ---------- 数据概览 ----------
+  function renderStats(){
+    var data=load();
+    var online=data.filter(function(x){return x.status==='online'});
+    var totalInq=data.reduce(function(s,x){return s+(+x.inq||0)},0);
+    var pubs={}; data.forEach(function(x){pubs[x.publisher]=1});
+    var clss={}; data.forEach(function(x){clss[x.cls]=1});
+    document.getElementById('stOnline').innerHTML=online.length+'<small> 个</small>';
+    document.getElementById('stInq').innerHTML=totalInq+'<small> 次</small>';
+    document.getElementById('stPub').innerHTML=Object.keys(pubs).length+'<small> 人</small>';
+    document.getElementById('stCls').innerHTML=Object.keys(clss).length+'<small> 类</small>';
+
+    // bar: top 8 classes by count
+    var byCls={}; data.forEach(function(x){byCls[x.cls]=(byCls[x.cls]||0)+1});
+    var arr=Object.keys(byCls).map(function(k){return {cls:+k,name:CLASS_NAMES[k]||'',v:byCls[k]}}).sort(function(a,b){return b.v-a.v}).slice(0,8);
+    var max=arr.length?arr[0].v:1;
+    var W=560,H=Math.max(160,arr.length*34),padL=96,padR=36,padT=8,padB=8,bw=W-padL-padR;
+    var barH=22,gap=(H-padT-padB-arr.length*barH)/(arr.length+1);
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:'+W+'px">';
+    arr.forEach(function(it,i){
+      var y=padT+gap+i*(barH+gap); var w=bw*it.v/max;
+      svg+='<text x="'+(padL-8)+'" y="'+(y+barH/2+4)+'" text-anchor="end" font-size="12" fill="#5b6b7c">第'+it.cls+'类</text>';
+      svg+='<rect x="'+padL+'" y="'+y+'" width="'+bw+'" height="'+barH+'" rx="5" fill="#eef2f7"/>';
+      svg+='<rect x="'+padL+'" y="'+y+'" width="'+w+'" height="'+barH+'" rx="5" fill="#1f5fae"/>';
+      svg+='<text x="'+(padL+w+6)+'" y="'+(y+barH/2+4)+'" font-size="12" font-weight="700" fill="#1f2d3d">'+it.v+'</text>';
+    });
+    svg+='</svg>';
+    document.getElementById('barChart').innerHTML=svg;
+
+    // donut: online vs offline
+    var off=data.length-online.length;
+    var segs=[{v:online.length,c:'#2e9e5b',l:'在线'},{v:off,c:'#cbd3de',l:'已下架'}];
+    var total=data.length;
+    var size=140,r=58,ir=38,C=2*Math.PI*r,cx=size/2,cy=size/2;
+    var svg2='<svg viewBox="0 0 '+size+' '+size+'" width="140" height="140">';
+    if(total===0){ svg2+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#eef2f7" stroke-width="'+(r-ir)+'"/>'; }
+    else{
+      var acc=0;
+      segs.forEach(function(s){
+        if(s.v===0) return;
+        var frac=s.v/total;
+        svg2+='<circle cx="'+cx+'" cy="'+cy+'" r="'+((r+ir)/2)+'" fill="none" stroke="'+s.c+'" stroke-width="'+(r-ir)+'" stroke-dasharray="'+(frac*C)+' '+C+'" stroke-dashoffset="'+( -acc*C )+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
+        acc+=frac;
+      });
+    }
+    svg2+='<text x="'+cx+'" y="'+(cy-2)+'" text-anchor="middle" font-size="22" font-weight="800" fill="#1f2d3d">'+total+'</text>';
+    svg2+='<text x="'+cx+'" y="'+(cy+16)+'" text-anchor="middle" font-size="11" fill="#5b6b7c">商标总数</text>';
+    svg2+='</svg>';
+    document.getElementById('donutChart').innerHTML=svg2;
+    document.getElementById('donutLegend').innerHTML=segs.map(function(s){
+      return '<div class="li"><span class="sw" style="background:'+s.c+'"></span>'+s.l+'<span class="lv">'+s.v+'</span></div>';
+    }).join('');
+    renderPubStats(data);
+  }
+  function renderPubStats(data){
+    var map={};
+    data.forEach(function(x){
+      var p=(x.publisher||'(未填)');
+      if(!map[p]) map[p]={pub:p,total:0,online:0,inq:0,maxPrice:0,cls:{}};
+      var m=map[p];
+      m.total++; if(x.status==='online')m.online++;
+      m.inq+=(+x.inq||0);
+      if(+x.price>0) m.maxPrice=Math.max(m.maxPrice,+x.price);
+      m.cls[x.cls]=1;
+    });
+    var arr=Object.keys(map).map(function(k){var m=map[k];return {pub:m.pub,total:m.total,online:m.online,inq:m.inq,maxPrice:m.maxPrice,clsN:Object.keys(m.cls).length};});
+    arr.sort(function(a,b){return b.total-a.total;});
+    if(!arr.length){ document.getElementById('pubStats').innerHTML='<div class="empty">暂无数据</div>'; return; }
+    var rows=arr.map(function(r){
+      return '<tr><td><b>'+esc(r.pub)+'</b></td><td>'+r.total+'</td><td>'+r.online+'</td><td>'+r.inq+'</td><td>'+(r.maxPrice?('¥'+Number(r.maxPrice).toLocaleString()):'—')+'</td><td>'+r.clsN+'</td></tr>';
+    }).join('');
+    var html='<div class="tbl-wrap"><table class="dt"><thead><tr><th>发布人</th><th>商标数</th><th>在线</th><th>累计询价</th><th>最高底价</th><th>覆盖类别</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    var max=arr[0].total;
+    var W=560,H=Math.max(120,arr.length*30),padL=80,padR=40,padT=6,padB=6,bw=W-padL-padR;
+    var barH=18,gap=(H-padT-padB-arr.length*barH)/(arr.length+1);
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:'+W+'px">';
+    arr.forEach(function(r,i){
+      var y=padT+gap+i*(barH+gap); var w=bw*r.total/max;
+      svg+='<text x="'+(padL-8)+'" y="'+(y+barH/2+4)+'" text-anchor="end" font-size="12" fill="#5b6b7c">'+esc(r.pub)+'</text>';
+      svg+='<rect x="'+padL+'" y="'+y+'" width="'+bw+'" height="'+barH+'" rx="5" fill="#eef2f7"/>';
+      svg+='<rect x="'+padL+'" y="'+y+'" width="'+w+'" height="'+barH+'" rx="5" fill="#b8902f"/>';
+      svg+='<text x="'+(padL+w+6)+'" y="'+(y+barH/2+4)+'" font-size="12" font-weight="700" fill="#1f2d3d">'+r.total+'</text>';
+    });
+    svg+='</svg>';
+    html+='<div style="margin-top:8px"><div style="font-size:12px;color:var(--ink2);margin-bottom:4px">各发布人商标数量</div>'+svg+'</div>';
+    document.getElementById('pubStats').innerHTML=html;
+  }
+
+  // ---------- 资源库筛选 ----------
+  function getFilters(){
+    return {
+      kw:(document.getElementById('fKw').value||'').trim().toLowerCase(),
+      cls:Array.from(selectedClasses),
+      pub:document.getElementById('fPub').value,
+      status:document.getElementById('fStatus').value,
+      from:document.getElementById('fDateFrom').value,
+      to:document.getElementById('fDateTo').value,
+      inqMin:document.getElementById('fInqMin').value,
+      inqMax:document.getElementById('fInqMax').value,
+      priceMin:document.getElementById('fPriceMin').value,
+      priceMax:document.getElementById('fPriceMax').value
+    };
+  }
+  function applyFilters(data,f){
+    return data.filter(function(x){
+      if(f.kw && (x.name+x.sub).toLowerCase().indexOf(f.kw)<0) return false;
+      if(f.cls && f.cls.length && f.cls.indexOf(String(x.cls))<0) return false;
+      if(f.pub && x.publisher!==f.pub) return false;
+      if(f.status && x.status!==f.status) return false;
+      if(f.from && x.date<f.from) return false;
+      if(f.to && x.date>f.to) return false;
+      if(f.inqMin!=='' && (+x.inq)<(+f.inqMin)) return false;
+      if(f.inqMax!=='' && (+x.inq)>(+f.inqMax)) return false;
+      if(f.priceMin!=='' && (+x.price||0)<(+f.priceMin)) return false;
+      if(f.priceMax!=='' && (+x.price||0)>(+f.priceMax)) return false;
+      return true;
+    });
+  }
+  function renderLibrary(){
+    var data=load(), f=getFilters();
+    var list=applyFilters(data,f);
+    __imgmap={}; list.forEach(function(x){ __imgmap[x.id]=getImgs(x); });
+    var s=document.getElementById('sortSel').value;
+    list.sort(function(a,b){
+      if(s==='date_desc') return (b.date>a.date?1:b.date<a.date?-1:0);
+      if(s==='date_asc') return (a.date>b.date?1:a.date<b.date?-1:0);
+      if(s==='price_desc') return ((+b.price||0)-(+a.price||0)) || (b.date>a.date?1:b.date<a.date?-1:0);
+      if(s==='price_asc') return ((+a.price||0)-(+b.price||0)) || (b.date>a.date?1:b.date<a.date?-1:0);
+      if(s==='inq_desc') return ((+b.inq||0)-(+a.inq||0)) || (b.date>a.date?1:b.date<a.date?-1:0);
+      if(s==='inq_asc') return ((+a.inq||0)-(+b.inq||0)) || (b.date>a.date?1:b.date<a.date?-1:0);
+      return (b.date>a.date?1:b.date<a.date?-1:0) || (b.inq-a.inq);
+    });
+    document.getElementById('listCount').innerHTML='共 <b>'+list.length+'</b> 条（总 '+data.length+' 条）';
+    var box=document.getElementById('cardList');
+    if(!list.length){ box.innerHTML='<div class="empty" style="grid-column:1/-1;padding:40px">没有符合条件的商标，试试调整筛选或发布新商标。</div>'; return; }
+    box.innerHTML=list.map(function(x){
+      var imgs=getImgs(x); var first=imgs[0];
+      var img;
+      if(!first){ img='<div class="noimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>暂无图片</div>'; }
+      else if(isDirect(first)){ img='<img src="'+first+'" alt="">'; }
+      else { img='<img data-imgpath="'+escAttr(first)+'" src="'+LOADING+'" alt="">'; }
+      var badge = imgs.length>1? '<div class="imgcount">共 '+imgs.length+' 张</div>' : '';
+      var st = x.status==='online'? '<span class="tag green">在线</span>' : '<span class="tag gray">已下架</span>';
+      var tgl = x.status==='online'? '下架':'上架';
+      return '<div class="tm">'+
+        '<label class="pick" title="勾选后可在导出时指定导出此商标"><input type="checkbox" class="pickbox" data-id="'+x.id+'"></label>'+
+        '<div class="thumb" data-id="'+x.id+'" onclick="__zoom(this)">'+img+badge+'<div class="status-strip">'+st+'</div></div>'+
+        '<div class="body">'+
+          '<div class="nm">'+esc(x.name)+'<span class="clsbadge">第'+x.cls+'类·'+(CLASS_NAMES[x.cls]||'')+'</span></div>'+
+          '<div class="meta"><div class="row"><span class="k">发布人</span><span>'+esc(x.publisher)+'</span></div><div class="row"><span class="k">日期</span><span>'+x.date+'</span></div><div class="row"><span class="k">底价</span><span style="color:var(--gold);font-weight:700">'+(+x.price>0?'¥'+Number(x.price).toLocaleString():'面议')+'</span></div></div>'+
+          (x.sub? '<div class="sub">'+esc(x.sub)+'</div>':'')+
+          '<div class="inq"><span class="n">'+x.inq+'<small> 次询价</small></span><button class="btn sm" onclick="__inc(\''+x.id+'\')">+1 询价</button></div>'+
+        '</div>'+
+        '<div class="acts">'+
+          '<button class="btn sm" onclick="__edit(\''+x.id+'\')">编辑</button>'+
+          '<button class="btn sm" onclick="__toggle(\''+x.id+'\')">'+(tgl)+'</button>'+
+          '<button class="btn sm danger" onclick="__del(\''+x.id+'\')">删除</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+    hydrateImgs();
+  }
+
+  // ---------- CRUD ----------
+  window.__inc=function(id){ var d=load(); var it=d.find(function(x){return String(x.id)===String(id)}); if(!it)return; it.inq=(+it.inq||0)+1; save(d); afterMutate('已记录一次询价'); };
+  window.__toggle=function(id){ var d=load(); var it=d.find(function(x){return String(x.id)===String(id)}); if(!it)return; it.status=it.status==='online'?'offline':'online'; save(d); afterMutate(it.status==='online'?'已重新上架':'已下架'); };
+  window.__del=function(id){ var it=load().find(function(x){return String(x.id)===String(id)}); needPwd('删除商标', function(){ confirmBox('确定删除商标「'+(it?it.name:'')+'」吗？此操作不可撤销。',function(){ var d=load().filter(function(x){return String(x.id)!==String(id)}); save(d); afterMutate('已删除'); }); }); };
+  window.__edit=function(id){ openForm(id); };
+  function afterMutate(msg){ toast(msg||'已保存'); renderToday(); if(document.getElementById('view-stats').classList.contains('active'))renderStats(); if(document.getElementById('view-library').classList.contains('active'))renderLibrary(); renderBackup(); refreshPubFilter(); }
+
+  // ---------- form ----------
+  var curImgs=[];
+  function getImgs(x){ if(!x) return []; if(Array.isArray(x.imgs)) return x.imgs.filter(Boolean); if(x.img) return [x.img]; return []; }
+  function fillClassSelect(sel){
+    sel.innerHTML='<option value="">请选择类别</option>'+Object.keys(CLASS_NAMES).map(function(k){return '<option value="'+k+'">第'+k+'类 · '+CLASS_NAMES[k]+'</option>'}).join('');
+  }
+  function openForm(id){
+    curImgs=[];
+    fillClassSelect(document.getElementById('fClassSel'));
+    if(id){
+      var it=load().find(function(x){return String(x.id)===String(id)}); if(!it)return;
+      document.getElementById('formTitle').textContent='编辑商标';
+      document.getElementById('fId').value=it.id;
+      document.getElementById('fName').value=it.name;
+      document.getElementById('fClassSel').value=it.cls;
+      document.getElementById('fPublisher').value=it.publisher;
+      document.getElementById('fSub').value=it.sub||'';
+      document.getElementById('fDate').value=it.date;
+      document.getElementById('fInq').value=it.inq;
+      document.getElementById('fPrice').value=it.price||0;
+      document.getElementById('fNote').value=it.note||'';
+      document.getElementById(it.status==='online'?'stOn':'stOff').checked=true;
+      curImgs=getImgs(it); updatePrev();
+    } else {
+      document.getElementById('formTitle').textContent='发布商标';
+      document.getElementById('fId').value='';
+      document.getElementById('fName').value='';
+      document.getElementById('fClassSel').value='';
+      document.getElementById('fPublisher').value='';
+      document.getElementById('fSub').value='';
+      document.getElementById('fDate').value=todayStr();
+      document.getElementById('fInq').value=0;
+      document.getElementById('fPrice').value=0;
+      document.getElementById('fNote').value='';
+      document.getElementById('stOn').checked=true;
+      curImgs=[]; updatePrev();
+    }
+    document.getElementById('maskForm').classList.add('open');
+  }
+  function updatePrev(){
+    var p=document.getElementById('imgPrev');
+    if(!curImgs.length){ p.innerHTML='<div class="prev-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div>'; return; }
+    p.innerHTML=curImgs.map(function(val,i){
+      var im = isDirect(val)? '<img src="'+val+'">' : '<img data-imgpath="'+escAttr(val)+'" src="'+LOADING+'">';
+      return '<div class="prev-item">'+im+'<button type="button" class="del" data-i="'+i+'" title="删除这张">×</button></div>';
+    }).join('');
+    Array.prototype.forEach.call(p.querySelectorAll('.del'),function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); var i=+this.getAttribute('data-i'); curImgs.splice(i,1); updatePrev(); }); });
+    hydrateImgs();
+  }
+  function processImg(file, done){
+    var rd=new FileReader();
+    rd.onload=function(){
+      var full=rd.result;
+      var rawB64=full.split(',')[1];
+      var rawBytes=atob(rawB64).length;
+      // 小图（已 ≤1600px 且体积 ≤700KB）保持原样，不做有损重编码：清晰度最高、体积最小
+      var im0=new Image();
+      im0.onload=function(){
+        var smallEnough=(im0.width<=1600 && im0.height<=1600);
+        if(smallEnough && rawBytes<=700000){ done(full); return; }
+        shrink(full, function(outB64){ done('data:image/jpeg;base64,'+outB64); });
+      };
+      im0.onerror=function(){ done(full); };
+      im0.src=full;
+    };
+    rd.readAsDataURL(file);
+  }
+  function shrink(dataUrl, cb){
+    var im=new Image(); im.onload=function(){
+      var max=1600, w=im.width,h=im.height, scale=Math.min(1,max/w,max/h);
+      var cw=Math.max(1,Math.round(w*scale)), ch=Math.max(1,Math.round(h*scale));
+      var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+      cv.getContext('2d').drawImage(im,0,0,cw,ch);
+      // 逐步降质量，确保解码后体积 < 700KB（base64 后 < ~933KB，远低于 GitHub 1MB 上限 → 上传更快、绝不超限失败）
+      // 起始 0.85 清晰度足够，仅超大图才继续降到 0.7，下载原图依旧清晰
+      var q=0.85, out=cv.toDataURL('image/jpeg',q);
+      while(out.split(',')[1].length>700000 && q>0.7){ q-=0.05; out=cv.toDataURL('image/jpeg',q); }
+      cb(out.split(',')[1]);
+    }; im.src=dataUrl;
+  }
+  function isDataUri(s){ return typeof s==='string' && s.indexOf('data:')===0; }
+  function countDataUri(arr){ var n=0; for(var i=0;i<arr.length;i++){ if(isDataUri(arr[i])) n++; } return n; }
+  // 保存时：把仍是 data URI 的新图并发上传到仓库（并发上限 4，带进度），返回路径数组；失败退回内嵌避免丢失
+  async function uploadOneImg(dataUri){
+    var m=/data:(image\/[a-z0-9.+-]+);base64,/.exec(dataUri||'');
+    var mime=m?m[1]:'image/jpeg';
+    var ext=(mime==='image/png'?'png':(mime==='image/gif'?'gif':(mime==='image/webp'?'webp':'jpg')));
+    var rawB64=dataUri.split(',')[1];
+    var name='images/'+Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
+    for(var i=0;i<3;i++){
+      try{
+        await ghPutFile(name, rawB64, 'img upload');
+        imgCache[name]='data:'+mimeOf(name)+';base64,'+rawB64; saveImgCache();
+        return name;
+      }catch(e){ if(i<2){ await sleep(700*(i+1)); continue; } }
+    }
+    return dataUri;   // 仍失败：退回内嵌，保存不丢失（不会变成占位符/消失）
+  }
+  async function uploadNewImgs(arr, onProg){
+    var queue=[]; for(var i=0;i<arr.length;i++){ if(isDataUri(arr[i])) queue.push({i:i, v:arr[i]}); }
+    var res=new Array(arr.length);
+    var idx=0;
+    async function worker(){
+      while(idx<queue.length){
+        var cur=queue[idx++];
+        res[cur.i]=await uploadOneImg(cur.v);
+        if(onProg) onProg(idx, queue.length);
+      }
+    }
+    var conc=Math.min(4, Math.max(1, queue.length));
+    var ws=[]; for(var k=0;k<conc;k++) ws.push(worker());
+    await Promise.all(ws);
+    for(var j=0;j<arr.length;j++){ if(!isDataUri(arr[j])) res[j]=arr[j]; }
+    return res;
+  }
+  document.getElementById('btnPickImg').addEventListener('click',function(){document.getElementById('fImg').click()});
+  document.getElementById('fImg').addEventListener('change',function(e){
+    var files=e.target.files; if(!files||!files.length)return;
+    toast('正在处理图片…');
+    var pending=files.length, added=0;
+    Array.prototype.forEach.call(files,function(f){ processImg(f,function(val){ curImgs.push(val); added++; if(added>=pending){ updatePrev(); toast('已添加 '+pending+' 张图片'); } }); });
+    e.target.value='';
+  });
+  document.getElementById('btnClearImg').addEventListener('click',function(){ curImgs=[]; updatePrev(); });
+  document.getElementById('btnAdd').addEventListener('click',function(){openForm()});
+  document.getElementById('formClose').addEventListener('click',closeForm);
+  document.getElementById('formCancel').addEventListener('click',closeForm);
+  function closeForm(){ document.getElementById('maskForm').classList.remove('open'); document.getElementById('fImg').value=''; }
+  var btnSaving=false;
+  document.getElementById('formSave').addEventListener('click', function(){
+    if(btnSaving) return;
+    var name=document.getElementById('fName').value.trim();
+    var cls=document.getElementById('fClassSel').value;
+    var pub=document.getElementById('fPublisher').value.trim();
+    if(!name){toast('请填写商标名称');return;}
+    if(!cls){toast('请选择类别');return;}
+    if(!pub){toast('请填写发布人');return;}
+    var id=document.getElementById('fId').value;
+    var imgs=curImgs.slice();
+    var d=load();
+    var rec={ name:name, cls:+cls, sub:document.getElementById('fSub').value.trim(), publisher:pub, date:document.getElementById('fDate').value||todayStr(), inq:+document.getElementById('fInq').value||0, price:+document.getElementById('fPrice').value||0, status:document.querySelector('input[name=fStatusRadio]:checked').value, note:document.getElementById('fNote').value.trim(), imgs:imgs };
+    var nn=null;
+    if(id){ var it=d.find(function(x){return String(x.id)===String(id)}); Object.assign(it,rec); }
+    else{ nn=getSeq()+1; rec.id=nn; setSeq(nn); d.push(rec); }
+    // 本地立即写入（新图以原图 data URI 暂存，立刻可见），先不推云端，避免大图内嵌导致 data.json 超限推送失败/图片丢失
+    DATA=d; localStorage.setItem(KEY, JSON.stringify(DATA));
+    closeForm(); afterMutate(id?'已更新':'已发布'); switchView('library');
+    if(!cfgValid()) return;                       // 未配置仓库：仅本地保存，结束
+    var pending=imgs.filter(isDataUri);
+    if(!pending.length){ persist(); return; }     // 没有新图：直接推云端
+    // 后台并发上传新图（不阻塞"保存"按钮），成功才把真实路径写回并推云端；失败自动退回内嵌兜底
+    btnSaving=true;
+    uploadNewImgs(imgs, function(done,total){ if(total>1) toast('图片上传中 '+done+'/'+total); })
+      .then(function(paths){
+        var d2=load(), rid=id||nn, it2=d2.find(function(x){return String(x.id)===String(rid)});
+        if(it2){ it2.imgs=paths; DATA=d2.map(function(x){return String(x.id)===String(rid)?it2:x;}); localStorage.setItem(KEY, JSON.stringify(DATA)); }
+        return persist();
+      })
+      .then(function(){ toast('图片已同步到云端'); if(document.getElementById('view-library').classList.contains('active')) renderLibrary(); })
+      .catch(function(){ toast('图片同步失败，已保留在本地，将自动重试'); if(document.getElementById('view-library').classList.contains('active')) renderLibrary(); })
+      .finally(function(){ btnSaving=false; });
+  });
+
+  // ---------- 备份 ----------
+  function renderBackup(){
+    var d=load(); var b=document.getElementById('backupBanner');
+    if(d.length>=30){ b.innerHTML='<div class="banner">📦 数据已积累 <b>'+d.length+'</b> 条，建议导出 JSON 备份以防丢失。<button class="btn sm primary" onclick="document.getElementById(\'btnExport\').click()">立即导出</button></div>'; }
+    else b.innerHTML='';
+  }
+  function exportJSON(){
+    var d=load(); var blob=new Blob([JSON.stringify({type:'trademark-lib',version:1,exported:todayStr(),data:d},null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='商标推荐资源库_备份_'+todayStr()+'.json'; a.click(); URL.revokeObjectURL(a.href); toast('已导出 '+d.length+' 条');
+  }
+  function csvCell(v){ v=String(v==null?'':v); if(/[",\r\n]/.test(v)) return '"'+v.replace(/"/g,'""')+'"'; return v; }
+  var COLS=[
+    {key:'name',label:'商标名称',get:function(x){return x.name||''}},
+    {key:'cls',label:'类别',get:function(x){return x.cls||''}},
+    {key:'clsName',label:'类别名称',get:function(x){return CLASS_NAMES[x.cls]||''}},
+    {key:'sub',label:'小项',get:function(x){return x.sub||''}},
+    {key:'price',label:'底价(元)',get:function(x){return (+x.price>0)?x.price:''}},
+    {key:'publisher',label:'发布人',get:function(x){return x.publisher||''}},
+    {key:'date',label:'发布日期',get:function(x){return x.date||''}},
+    {key:'inq',label:'询价次数',get:function(x){return (+x.inq||0)}},
+    {key:'status',label:'状态',get:function(x){return x.status==='online'?'在线':'已下架'}},
+    {key:'note',label:'备注',get:function(x){return x.note||''}}
+  ];
+  var COLS_BY={}; COLS.forEach(function(c){COLS_BY[c.key]=c;});
+  function openExportDlg(){
+    var f=getFilters();
+    var list=applyFilters(load(),f).sort(function(a,b){ return (b.date>a.date?1:b.date<a.date?-1:0) || (b.inq-a.inq); });
+    if(!list.length){ toast('当前筛选无数据可导出'); return; }
+    var cardPicked={}, any=false;
+    document.querySelectorAll('.pickbox').forEach(function(cb){ if(cb.checked){ cardPicked[String(cb.dataset.id)]=true; any=true; } });
+    document.getElementById('exItems').innerHTML=list.map(function(x){
+      var id=String(x.id), chk=any?!!cardPicked[id]:true;
+      return '<label class="exp-row"><input type="checkbox" class="ex-item" data-id="'+id+'"'+(chk?' checked':'')+'><span>第'+x.cls+'类 · '+esc(x.name||'')+'<span class="sub">'+(CLASS_NAMES[x.cls]||'')+' · '+esc(x.publisher||'')+'</span></span></label>';
+    }).join('');
+    document.getElementById('exCols').innerHTML=COLS.map(function(c){ return '<label class="exp-row"><input type="checkbox" class="ex-col" data-key="'+c.key+'" checked><span>'+c.label+'</span></label>'; }).join('');
+    document.getElementById('maskExport').classList.add('open');
+  }
+  function confirmExport(){
+    var ids={}, keys=[];
+    document.querySelectorAll('.ex-item').forEach(function(cb){ if(cb.checked) ids[cb.dataset.id]=true; });
+    document.querySelectorAll('.ex-col').forEach(function(cb){ if(cb.checked) keys.push(cb.dataset.key); });
+    if(!keys.length){ toast('请至少勾选一列字段'); return; }
+    var f=getFilters();
+    var list=applyFilters(load(),f).sort(function(a,b){ return (b.date>a.date?1:b.date<a.date?-1:0) || (b.inq-a.inq); }).filter(function(x){ return ids[String(x.id)]; });
+    if(!list.length){ toast('请至少勾选一个商标'); return; }
+    var head=keys.map(function(k){ return COLS_BY[k].label; });
+    var rows=list.map(function(x){ return keys.map(function(k){ return COLS_BY[k].get(x); }); });
+    var csv=[head].concat(rows).map(function(r){ return r.map(csvCell).join(','); }).join('\r\n');
+    var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='商标资源库_导出_'+todayStr()+'.csv'; a.click(); URL.revokeObjectURL(a.href);
+    document.getElementById('maskExport').classList.remove('open');
+    toast('已导出 '+list.length+' 条 / '+keys.length+' 列');
+  }
+
+  function importJSON(file){
+    var rd=new FileReader();
+    rd.onload=function(){
+      try{ var obj=JSON.parse(rd.result); var arr=Array.isArray(obj)?obj:(obj.data||[]); if(!Array.isArray(arr))throw 0;
+        arr.forEach(function(x){ if(!x.id)x.id=getSeq()+1,setSeq(getSeq()+1); });
+        var cur=load(); var map={}; cur.forEach(function(x){map[x.id]=1});
+        arr.forEach(function(x){ if(map[x.id]){var i=cur.findIndex(function(c){return c.id===x.id}); cur[i]=x;} else cur.push(x); });
+        save(cur); renderToday(); renderLibrary(); renderStats(); renderBackup(); refreshPubFilter(); toast('已恢复 '+arr.length+' 条');
+      }catch(e){ toast('导入失败：文件格式不正确'); }
+    };
+    rd.readAsText(file);
+  }
+  document.getElementById('btnExport').addEventListener('click',exportJSON);
+  document.getElementById('btnExportXls').addEventListener('click',openExportDlg);
+  document.getElementById('exClose').addEventListener('click',function(){document.getElementById('maskExport').classList.remove('open');});
+  document.getElementById('exCancel').addEventListener('click',function(){document.getElementById('maskExport').classList.remove('open');});
+  document.getElementById('exOk').addEventListener('click',confirmExport);
+  document.getElementById('exAll').addEventListener('click',function(){document.querySelectorAll('.ex-item').forEach(function(cb){cb.checked=true;});});
+  document.getElementById('exNone').addEventListener('click',function(){document.querySelectorAll('.ex-item').forEach(function(cb){cb.checked=false;});});
+  document.getElementById('exColAll').addEventListener('click',function(){document.querySelectorAll('.ex-col').forEach(function(cb){cb.checked=true;});});
+  document.getElementById('exColNone').addEventListener('click',function(){document.querySelectorAll('.ex-col').forEach(function(cb){cb.checked=false;});});
+  document.getElementById('maskExport').addEventListener('click',function(e){ if(e.target.id==='maskExport') e.currentTarget.classList.remove('open'); });
+  document.getElementById('sortSel').addEventListener('change',renderLibrary);
+  document.getElementById('btnImport').addEventListener('click',function(){document.getElementById('fileImport').click()});
+  document.getElementById('fileImport').addEventListener('change',function(e){ if(e.target.files[0]){ var f=e.target.files[0]; needPwd('导入恢复数据', function(){ importJSON(f); }); } e.target.value=''; });
+  document.getElementById('btnClearSample').addEventListener('click',function(){ needPwd('清空示例数据', function(){ confirmBox('清空<b>示例数据</b>（仅删除预置示例，不影响你后续发布的数据）？',function(){ var d=load().filter(function(x){return x.id>5}); save(d); afterMutate('示例数据已清空'); }); }); });
+  document.getElementById('btnClearAll').addEventListener('click',function(){ needPwd('清空全部数据', function(){ confirmBox('确定<b>清空全部数据</b>吗？此操作不可撤销，建议先导出备份。',function(){ save([]); setSeq(0); afterMutate('全部数据已清空'); }); }); });
+
+  // ---------- 管理口令 ----------
+  function needPwd(label, fn){
+    if(!CFG.adminPwd){ fn(); return; }
+    var p=prompt('此敏感操作需要管理口令（'+label+'）：','');
+    if(p===null) return;
+    if(p===CFG.adminPwd){ fn(); }
+    else { toast('口令错误，操作已取消'); }
+  }
+
+  // ---------- 设置（GitHub 后端配置） ----------
+  document.getElementById('btnSettings').addEventListener('click',openSettings);
+  function openSettings(){
+    document.getElementById('setOwner').value=CFG.owner||'';
+    document.getElementById('setRepo').value=CFG.repo||'';
+    document.getElementById('setBranch').value=CFG.branch||'main';
+    document.getElementById('setPat').value=CFG.pat||'';
+    document.getElementById('setWho').value=CFG.who||'';
+    document.getElementById('setPwd').value=CFG.adminPwd||'';
+    document.getElementById('setSync').value=CFG.syncSec||'5';
+    document.getElementById('setGate').value=GATE||'';
+    renderAccessLog();
+    document.getElementById('maskSettings').classList.add('open');
+  }
+  function closeSettings(){ document.getElementById('maskSettings').classList.remove('open'); }
+  document.getElementById('setClose').addEventListener('click',closeSettings);
+  document.getElementById('setCancel').addEventListener('click',closeSettings);
+  document.getElementById('maskSettings').addEventListener('click',function(e){ if(e.target.id==='maskSettings') closeSettings(); });
+  document.getElementById('btnPublishPages').addEventListener('click',publishToPages);
+  // 顶部常驻按钮：打开设置面板（内含进度与最终链接），若已配置则直接发布
+  document.getElementById('btnPublishTop').addEventListener('click',function(){
+    openSettings();
+    if(!cfgValid()){ toast('请先在设置里填好 GitHub 配置（仓库名/分支/PAT）并保存，再点发布',6000); return; }
+    publishToPages();
+  });
+  document.getElementById('setSave').addEventListener('click',function(){
+    var o=document.getElementById('setOwner').value.trim();
+    var r=document.getElementById('setRepo').value.trim();
+    var b=document.getElementById('setBranch').value.trim()||'main';
+    var p=document.getElementById('setPat').value.trim();
+    var w=document.getElementById('setWho').value.trim();
+    var pw=document.getElementById('setPwd').value;
+    var g=document.getElementById('setGate').value;
+    var ss=document.getElementById('setSync').value.trim()||'5';
+    if(!o||!r||!p){ toast('仓库所有者、仓库名、访问令牌(PAT)均为必填'); return; }
+    if(cfgValid()){ CFG={owner:o,repo:r,branch:b,pat:p,who:w,adminPwd:pw,syncSec:ss}; }
+    else { CFG={owner:o,repo:r,branch:b,pat:p,who:w,adminPwd:pw,gate:g,syncSec:ss}; }
+    saveCfg(CFG);
+    startSync();
+    closeSettings();
+    toast('配置已保存，正在连接并同步…');
+    if(cfgValid()){
+      META=META||{}; META.gate=g;
+      saveMeta().then(function(){ localStorage.setItem(GATE_KEY,g); boot(); });
+    }else{
+      localStorage.setItem(GATE_KEY,g); boot();
+    }
+  });
+
+  // ---------- 团队访问口令（锁屏） ----------
+  function fmtTime(iso){ try{ var d=new Date(iso); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }catch(e){ return iso; } }
+  function showLock(){
+    document.getElementById('lockPwd').value='';
+    document.getElementById('lockErr').textContent='';
+    document.getElementById('maskLock').classList.add('open');
+    setTimeout(function(){ try{document.getElementById('lockPwd').focus();}catch(e){} },50);
+  }
+  function tryUnlock(){
+    var v=document.getElementById('lockPwd').value;
+    if(v===GATE){ localStorage.setItem(GATE_KEY,GATE); document.getElementById('maskLock').classList.remove('open'); enterApp(); }
+    else { document.getElementById('lockErr').textContent='口令错误，请重新输入'; }
+  }
+  function renderAccessLog(){
+    var arr = cfgValid()? (META.access||[]) : JSON.parse(localStorage.getItem('wb_tm_access')||'[]');
+    arr = arr.slice(-30).reverse();
+    var html = arr.length? arr.map(function(e){
+      return '<div class="al-row"><span class="al-who">'+esc(e.who||'匿名')+'</span><span class="al-t">'+fmtTime(e.t)+'</span></div>';
+    }).join('') : '<div class="al-empty">暂无访问记录</div>';
+    document.getElementById('accessLog').innerHTML=html;
+  }
+  document.getElementById('lockOk').addEventListener('click',tryUnlock);
+  document.getElementById('lockPwd').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
+
+  // ---------- confirm ----------
+  function confirmBox(html,cb){ document.getElementById('confirmTxt').innerHTML=html; document.getElementById('maskConfirm').classList.add('open'); PENDING.cb=cb; }
+  document.getElementById('confirmCancel').addEventListener('click',function(){document.getElementById('maskConfirm').classList.remove('open');PENDING.cb=null});
+  document.getElementById('confirmOk').addEventListener('click',function(){var cb=PENDING.cb; document.getElementById('maskConfirm').classList.remove('open'); PENDING.cb=null; if(cb)cb();});
+
+  // ---------- filters UI ----------
+  function refreshPubFilter(){
+    var d=load(); var pubs=[]; d.forEach(function(x){if(pubs.indexOf(x.publisher)<0)pubs.push(x.publisher)});
+    var sel=document.getElementById('fPub'); var cur=sel.value;
+    sel.innerHTML='<option value="">全部</option>'+pubs.map(function(p){return '<option value="'+esc(p)+'">'+esc(p)+'</option>'}).join('');
+    sel.value=cur;
+  }
+  document.getElementById('btnFilter').addEventListener('click',renderLibrary);
+  document.getElementById('btnReset').addEventListener('click',function(){
+    ['fKw','fPub','fStatus','fDateFrom','fDateTo','fInqMin','fInqMax','fPriceMin','fPriceMax'].forEach(function(id){document.getElementById(id).value='';});
+    selectedClasses.clear(); updateClassBtn(); buildClassList();
+    renderLibrary();
+  });
+  document.getElementById('fKw').addEventListener('keydown',function(e){if(e.key==='Enter')renderLibrary()});
+
+  // ---------- 多类别筛选 ----------
+  var selectedClasses=new Set();
+  function buildClassList(filter){
+    var list=document.getElementById('fClassList');
+    var q=(filter||'').toLowerCase();
+    list.innerHTML=Object.keys(CLASS_NAMES).filter(function(k){ return !q || k.indexOf(q)>=0 || CLASS_NAMES[k].toLowerCase().indexOf(q)>=0; }).map(function(k){
+      var chk=selectedClasses.has(k)?'checked':'';
+      return '<label><input type="checkbox" value="'+k+'" '+chk+'><span>第'+k+'类</span><span class="cn">'+CLASS_NAMES[k]+'</span></label>';
+    }).join('');
+  }
+  function updateClassBtn(){ document.getElementById('fClassBtn').textContent= selectedClasses.size? ('已选 '+selectedClasses.size+' 类') : '全部类别'; }
+  function setupMsel(){
+    buildClassList(); updateClassBtn();
+    var panel=document.getElementById('fClassPanel'), btn=document.getElementById('fClassBtn');
+    btn.addEventListener('click',function(e){ e.stopPropagation(); panel.hidden=!panel.hidden; });
+    document.getElementById('fClassSearch').addEventListener('input',function(e){ buildClassList(e.target.value); });
+    document.getElementById('fClassAll').addEventListener('click',function(){ Object.keys(CLASS_NAMES).forEach(function(k){selectedClasses.add(k)}); buildClassList(document.getElementById('fClassSearch').value); updateClassBtn(); });
+    document.getElementById('fClassNone').addEventListener('click',function(){ selectedClasses.clear(); buildClassList(document.getElementById('fClassSearch').value); updateClassBtn(); });
+    document.getElementById('fClassList').addEventListener('change',function(e){ if(e.target.type==='checkbox'){ if(e.target.checked) selectedClasses.add(e.target.value); else selectedClasses.delete(e.target.value); updateClassBtn(); } });
+    document.addEventListener('click',function(e){ if(!document.getElementById('msClass').contains(e.target)) panel.hidden=true; });
+  }
+
+  // ---------- 图片放大 ----------
+  var __imgmap={}, __curArr=[], __curIdx=0;
+  window.__zoom=function(el){ var id=el.getAttribute('data-id'); var arr=__imgmap[id]; if(!arr||!arr.length)return; openLightbox(arr,0); };
+  function openLightbox(arr,idx){ __curArr=arr; __curIdx=idx||0; showLightbox(); document.getElementById('maskImg').classList.add('open'); }
+  function showLightbox(){ var a=__curArr, i=__curIdx; var big=document.getElementById('bigImg'); big.removeAttribute('data-imgpath'); var src=a[i]; if(!isDirect(src)) big.setAttribute('data-imgpath', src); setImg(big, src); document.getElementById('imgIdx').textContent=(i+1)+' / '+a.length; var multi=a.length>1; document.getElementById('imgPrevBtn').style.display=multi?'flex':'none'; document.getElementById('imgNextBtn').style.display=multi?'flex':'none'; document.getElementById('imgIdx').style.display=multi?'block':'none'; }
+  function lightboxStep(d){ if(__curArr.length<2)return; __curIdx=(__curIdx+d+__curArr.length)%__curArr.length; showLightbox(); }
+  function closeZoom(){ document.getElementById('maskImg').classList.remove('open'); }
+  document.getElementById('imgClose').addEventListener('click',closeZoom);
+  document.getElementById('imgPrevBtn').addEventListener('click',function(e){ e.stopPropagation(); lightboxStep(-1); });
+  document.getElementById('imgNextBtn').addEventListener('click',function(e){ e.stopPropagation(); lightboxStep(1); });
+  document.addEventListener('keydown',function(e){ if(!document.getElementById('maskImg').classList.contains('open'))return; if(e.key==='Escape')closeZoom(); if(e.key==='ArrowLeft')lightboxStep(-1); if(e.key==='ArrowRight')lightboxStep(1); });
+  document.getElementById('maskImg').addEventListener('click',function(e){ if(e.target.id==='maskImg'||e.target.id==='bigImg') closeZoom(); });
+  document.getElementById('imgDownload').addEventListener('click',function(e){ e.stopPropagation(); downloadImg(__curArr[__curIdx]); });
+  document.getElementById('imgCopy').addEventListener('click',function(e){ e.stopPropagation(); copyImg(__curArr[__curIdx]); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeZoom(); });
+
+  // ---------- helpers ----------
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
+
+  // ---------- init ----------
+  loadImgCache();
+  fillClassSelect(document.getElementById('fClassSel'));
+  setupMsel();
+  boot();
+  window.addEventListener('focus', function(){ syncOnce(); });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) syncOnce(); });
+});
+
+</script>
+<div class="mask" id="maskExport">
+  <div class="modal">
+    <div class="m-head"><h3>导出设置</h3><button class="x" id="exClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+    <div class="m-body">
+      <div class="exp-sec">
+        <div class="exp-sec-head"><b>选择商标<span style="color:var(--ink2);font-weight:400;font-size:12px">（默认按卡片勾选，未勾则导出全部筛选结果）</span></b><span class="exp-actions"><a id="exAll">全选</a><a id="exNone">清空</a></span></div>
+        <div class="exp-scroll" id="exItems"></div>
+      </div>
+      <div class="exp-sec" style="margin-top:6px">
+        <div class="exp-sec-head"><b>导出字段</b><span class="exp-actions"><a id="exColAll">全选</a><a id="exColNone">清空</a></span></div>
+        <div class="exp-scroll" id="exCols"></div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn" id="exCancel">取消</button><button class="btn primary" id="exOk">确认导出</button></div>
+  </div>
+</div>
+<div class="mask" id="maskSettings">
+  <div class="modal">
+    <div class="m-head"><h3>设置 · 多人共享后端</h3><button class="x" id="setClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+    <div class="m-body">
+      <div style="font-size:12.5px;color:var(--ink2);line-height:1.6;background:var(--line2);padding:10px 12px;border-radius:9px;margin-bottom:14px">
+        数据存于 <b>GitHub 仓库</b>（公开或私有均可，私有也能正常显示/下载原图）。首次使用需准备：① 新建一个仓库；② 在 GitHub 生成 <b>fine-grained token</b>，仅授权该仓库的 <b>Contents 读写</b>；③ 把下面三项填好保存即可。所有组员用同一份配置即可共享同一后台。
+      </div>
+      <div class="field"><label>仓库所有者 (owner)</label><input id="setOwner" placeholder="如 zhangsan"></div>
+      <div class="field"><label>仓库名 (repo)</label><input id="setRepo" placeholder="如 trademark-shared"></div>
+      <div class="field"><label>分支 (branch)</label><input id="setBranch" placeholder="main"></div>
+      <div class="field"><label>访问令牌 PAT</label><input id="setPat" type="password" placeholder="github_pat_xxx"></div>
+      <div class="field"><label>你的名字（写入记录，可选）</label><input id="setWho" placeholder="如 张敏"></div>
+      <div class="field"><label>团队访问口令（打开链接需输入，留空=不限制）</label><input id="setGate" type="password" placeholder="设置后所有组员需输入此口令"></div>
+      <div class="field"><label>管理口令（删除/清空需输入，可选）</label><input id="setPwd" type="password" placeholder="留空则不需口令"></div>
+      <div class="field"><label>同步间隔（秒，2–60，越小越实时）</label><input id="setSync" type="number" min="2" max="60" value="5"></div>
+      <div style="font-size:12.5px;color:var(--ink2);margin:2px 0 6px">访问记录（最近进入的人；开启团队访问口令后才会记录）：</div>
+      <div id="accessLog" class="access-log"><div class="al-empty">暂无访问记录</div></div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px dashed #d7dde6">
+        <div style="font-size:12.5px;color:#5b6573;line-height:1.6;margin-bottom:8px">
+          <b>发布为永久稳定链接（GitHub Pages）</b>：把本页发布成 <code style="background:#eef1f6;padding:1px 5px;border-radius:4px">https://&lt;所有者&gt;.github.io/&lt;仓库&gt;/</code>，<b>永不打不开</b>。填好上方配置后点下面按钮即可一键发布；若提示 PAT 无 Pages 权限，按弹窗指引在 GitHub 网页点一下启用（仅需一次）。
+        </div>
+        <button class="btn gold" id="btnPublishPages" style="width:100%">🚀 发布到 GitHub Pages（生成永久链接）</button>
+        <div id="pagesResult" style="font-size:12.5px;margin-top:8px;color:#2b3440;line-height:1.7">正在读取当前页面源码…</div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn" id="setCancel">取消</button><button class="btn primary" id="setSave">保存并连接</button></div>
+  </div>
+</div>
+<div class="mask lock" id="maskLock">
+  <div class="lock-card">
+    <div class="lock-badge">🔒</div>
+    <h3>商标推荐资源库</h3>
+    <p>请输入团队访问口令</p>
+    <input id="lockPwd" type="password" placeholder="访问口令" autocomplete="off">
+    <button class="btn primary block" id="lockOk">进入</button>
+    <div class="lock-err" id="lockErr"></div>
+    <div class="lock-tip">口令由管理员在「设置」中设定并单独告知你</div>
+  </div>
+</div>
+
+
+</body></html>
